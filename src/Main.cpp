@@ -8,9 +8,13 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <vector>
 
 const int WINDOW_WIDTH = 640, WINDOW_HEIGHT = 480;
 const std::string WINDOW_TITLE = "Lighting of Cube and Sphere";
+
+const float M_PI = 3.14159265358979323846f;
+const float M_PI_2 = M_PI / 2.0f;
 
 struct ShaderProgramSource
 {
@@ -91,6 +95,40 @@ static unsigned int CreateShader(const std::string& vertexShader, const std::str
 	glDeleteShader(fs);
 
 	return program;
+}
+
+// Function to generate sphere vertices and indices
+void generateSphere(float radius, unsigned int rings, unsigned int sectors, std::vector<float>& vertices, std::vector<unsigned int>& indices) {
+    float const R = 1.0f / (float)(rings - 1);
+    float const S = 1.0f / (float)(sectors - 1);
+    int r, s;
+
+    vertices.resize(rings * sectors * 6);
+    std::vector<float>::iterator v = vertices.begin();
+    for (r = 0; r < rings; r++) for (s = 0; s < sectors; s++) {
+        float const y = sin(-M_PI_2 + M_PI * r * R);
+        float const x = cos(2 * M_PI * s * S) * sin(M_PI * r * R);
+        float const z = sin(2 * M_PI * s * S) * sin(M_PI * r * R);
+
+        *v++ = x * radius;
+        *v++ = y * radius;
+        *v++ = z * radius;
+
+        *v++ = x;
+        *v++ = y;
+        *v++ = z;
+    }
+
+    indices.resize(rings * sectors * 6);
+    std::vector<unsigned int>::iterator i = indices.begin();
+    for (r = 0; r < rings - 1; r++) for (s = 0; s < sectors - 1; s++) {
+        *i++ = r * sectors + s;
+        *i++ = r * sectors + (s + 1);
+        *i++ = (r + 1) * sectors + (s + 1);
+        *i++ = (r + 1) * sectors + (s + 1);
+        *i++ = (r + 1) * sectors + s;
+        *i++ = r * sectors + s;
+    }
 }
 
 int main(void)
@@ -197,6 +235,28 @@ int main(void)
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (const void*)(sizeof(float) * 3)); // Normal
     glEnableVertexAttribArray(1);
 
+    std::vector<float> sphereVertices;
+    std::vector<unsigned int> sphereIndices;
+    generateSphere(0.5f, 20, 20, sphereVertices, sphereIndices);
+
+    unsigned int sphereVao, sphereVbo, sphereIbo;
+    glGenVertexArrays(1, &sphereVao);
+    glBindVertexArray(sphereVao);
+
+    glGenBuffers(1, &sphereVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, sphereVbo);
+    glBufferData(GL_ARRAY_BUFFER, sphereVertices.size() * sizeof(float), &sphereVertices[0], GL_STATIC_DRAW);
+
+    glGenBuffers(1, &sphereIbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphereIbo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphereIndices.size() * sizeof(unsigned int), &sphereIndices[0], GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (const void*)0); // Position
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (const void*)(sizeof(float) * 3)); // Normal
+    glEnableVertexAttribArray(1);
+
     ShaderProgramSource source = ParseShader("res/shaders/Basic.shader");
     std::cout << "VERTEX SHADERS" << std::endl;
     std::cout << source.VertexSource << std::endl;
@@ -209,7 +269,7 @@ int main(void)
     // Set up the camera and projection
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), 640.0f / 480.0f, 0.1f, 100.0f);
     glm::mat4 view = glm::lookAt(
-        glm::vec3(2.0f, 2.0f, 2.0f), // Camera position
+        glm::vec3(4.0f, 4.0f, 4.0f), // Camera position
         glm::vec3(0.0f, 0.0f, 0.0f), // Look at the origin
         glm::vec3(0.0f, 1.0f, 0.0f)  // Up vector
     );
@@ -256,6 +316,13 @@ int main(void)
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 
+        // Draw the sphere
+        glm::mat4 sphereModel = glm::translate(glm::mat4(1.0f), glm::vec3(1.5f, 0.0f, 0.0f)); // Position the sphere beside the cube
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(sphereModel));
+
+        glBindVertexArray(sphereVao);
+        glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, nullptr);
+
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
@@ -267,6 +334,9 @@ int main(void)
     glDeleteVertexArrays(1, &vao);
     glDeleteBuffers(1, &buffer);
     glDeleteBuffers(1, &ibo);
+    glDeleteVertexArrays(1, &sphereVao);
+    glDeleteBuffers(1, &sphereVbo);
+    glDeleteBuffers(1, &sphereIbo);
 
     glfwTerminate();
     return 0;
