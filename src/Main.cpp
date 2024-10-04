@@ -220,13 +220,13 @@ int main(void)
     int viewLoc = glGetUniformLocation(shader, "view");
     int projLoc = glGetUniformLocation(shader, "projection");
 
+    glEnable(GL_DEPTH_TEST);
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        glEnable(GL_DEPTH_TEST);
 
         // Set the uniform matrices
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
