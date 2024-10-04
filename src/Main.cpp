@@ -117,25 +117,60 @@ int main(void)
 
 	std::cout << glGetString(GL_VERSION) << std::endl;
 
-    /* Cube vertices and indices */
-    float positions[24] = {
-        -0.5f, -0.5f, -0.5f, // Vertex 0
-         0.5f, -0.5f, -0.5f, // Vertex 1
-         0.5f,  0.5f, -0.5f, // Vertex 2
-        -0.5f,  0.5f, -0.5f, // Vertex 3
-        -0.5f, -0.5f,  0.5f, // Vertex 4
-         0.5f, -0.5f,  0.5f, // Vertex 5
-         0.5f,  0.5f,  0.5f, // Vertex 6
-        -0.5f,  0.5f,  0.5f  // Vertex 7
+    /* Cube vertices */
+    float positions[288] = {
+        // Positions          // Normals
+        // Back face
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+        // Front face
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+
+        // Left face
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+        // Right face
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+         // Top face
+         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+          0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+          0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+         -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+
+         // Bottom face
+         -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+          0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+          0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+         -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f
     };
 
-    unsigned int indices[36] = {
-        0, 1, 2, 2, 3, 0, // Back face
-        4, 5, 6, 6, 7, 4, // Front face
-        0, 1, 5, 5, 4, 0, // Bottom face
-        2, 3, 7, 7, 6, 2, // Top face
-        0, 3, 7, 7, 4, 0, // Left face
-        1, 2, 6, 6, 5, 1  // Right face
+    /* Cube indices */
+    unsigned int indices[] = {
+        // Back face
+        0, 1, 2,   2, 3, 0,
+        // Front face
+        4, 5, 6,   6, 7, 4,
+        // Left face
+        8, 9, 10,  10, 11, 8,
+        // Right face
+        12, 13, 14, 14, 15, 12,
+        // Top face
+        16, 17, 18, 18, 19, 16,
+        // Bottom face
+        20, 21, 22, 22, 23, 20
     };
 
     // Create vertex buffer object
@@ -155,6 +190,12 @@ int main(void)
     glGenBuffers(1, &ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (const void*)0); // Position
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (const void*)(sizeof(float) * 3)); // Normal
+    glEnableVertexAttribArray(1);
 
     ShaderProgramSource source = ParseShader("res/shaders/Basic.shader");
     std::cout << "VERTEX SHADERS" << std::endl;
@@ -183,12 +224,33 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glEnable(GL_DEPTH_TEST);
 
         // Set the uniform matrices
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+        float time = glfwGetTime(); // Get the current time for dynamic light movement
+        float lightX = sin(time) * 2.0f;
+        float lightZ = cos(time) * 2.0f;
+        glm::vec3 lightPos = glm::vec3(lightX, 1.0f, lightZ);
+
+        int lightPosLoc = glGetUniformLocation(shader, "lightPos");
+        int viewPosLoc = glGetUniformLocation(shader, "viewPos");
+        int lightColorLoc = glGetUniformLocation(shader, "lightColor");
+        int objectColorLoc = glGetUniformLocation(shader, "objectColor");
+
+        // Camera position (you can update this based on user input if needed)
+        glm::vec3 viewPos = glm::vec3(2.0f, 2.0f, 2.0f);
+
+        // Pass light and view data to the shader
+        glUniform3fv(lightPosLoc, 1, glm::value_ptr(lightPos));
+        glUniform3fv(viewPosLoc, 1, glm::value_ptr(viewPos));
+        glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f); // White light
+        glUniform3f(objectColorLoc, 0.5f, 0.1f, 0.3f); // Same object color as before
 
         /* Draw the cube */
         glBindVertexArray(vao);
