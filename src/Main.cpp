@@ -317,7 +317,7 @@ int main(void)
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 
         // Draw the sphere
-        glm::mat4 sphereModel = glm::translate(glm::mat4(1.0f), glm::vec3(1.5f, 0.0f, 0.0f)); // Position the sphere beside the cube
+        glm::mat4 sphereModel = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 1.0f, 0.0f)); // Position the sphere beside the cube
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(sphereModel));
 
         glBindVertexArray(sphereVao);
