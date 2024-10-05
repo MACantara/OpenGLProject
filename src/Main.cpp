@@ -16,7 +16,7 @@ const std::string WINDOW_TITLE = "Lighting of Cube and Sphere";
 const float M_PI = 3.14159265358979323846f;
 const float M_PI_2 = M_PI / 2.0f;
 
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraPos = glm::vec3(0.0f, 1.0f, 6.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 float cameraSpeed = 0.1f;  // Adjust this speed as needed
