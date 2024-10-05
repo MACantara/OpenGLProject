@@ -16,6 +16,11 @@ const std::string WINDOW_TITLE = "Lighting of Cube and Sphere";
 const float M_PI = 3.14159265358979323846f;
 const float M_PI_2 = M_PI / 2.0f;
 
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+float cameraSpeed = 0.1f;  // Adjust this speed as needed
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     // Adjust the viewport based on the new window dimensions
@@ -330,6 +335,17 @@ int main(void)
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
+        // Process input
+        float deltaTime = 0.1f;  // Can adjust or calculate based on actual time elapsed
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+            cameraPos += cameraSpeed * deltaTime * cameraFront;
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+            cameraPos -= cameraSpeed * deltaTime * cameraFront;
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+            cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * deltaTime;
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+            cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed * deltaTime;
+
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -350,6 +366,19 @@ int main(void)
 
         // Camera position (you can update this based on user input if needed)
         glm::vec3 viewPos = glm::vec3(2.0f, 2.0f, 2.0f);
+
+        // Camera/View transformation
+        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+        // Set the view matrix in the shader
+        unsigned int viewLoc = glGetUniformLocation(shader, "view");
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
+
+        // Set the projection matrix in the shader
+        unsigned int projectionLoc = glGetUniformLocation(shader, "projection");
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
         // Pass light and view data to the shader
         glUniform3fv(lightPosLoc, 1, glm::value_ptr(lightPos));
