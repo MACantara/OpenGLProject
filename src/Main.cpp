@@ -21,6 +21,14 @@ glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 float cameraSpeed = 0.1f;  // Adjust this speed as needed
 
+float cameraYaw = -90.0f;  // Yaw is initialized to -90.0 degrees (pointing towards negative z-axis)
+float cameraPitch = 0.0f;  // Pitch is initialized to 0.0 degrees
+float lastX = WINDOW_WIDTH / 2.0f;  // Last x-coordinate of the mouse
+float lastY = WINDOW_HEIGHT / 2.0f; // Last y-coordinate of the mouse
+bool firstMouse = true;  // Flag to ignore the first mouse movement
+
+float sensitivity = 0.1f;  // Sensitivity for the mouse movement
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     // Adjust the viewport based on the new window dimensions
@@ -142,6 +150,40 @@ void generateSphere(float radius, unsigned int rings, unsigned int sectors, std:
     }
 }
 
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    if (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos;  // Reversed since y-coordinates range from bottom to top
+    lastX = xpos;
+    lastY = ypos;
+
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    cameraYaw += xoffset;
+    cameraPitch += yoffset;
+
+    // Constrain the pitch so the camera doesn't flip over
+    if (cameraPitch > 89.0f)
+        cameraPitch = 89.0f;
+    if (cameraPitch < -89.0f)
+        cameraPitch = -89.0f;
+
+    // Update cameraFront vector
+    glm::vec3 front;
+    front.x = cos(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
+    front.y = sin(glm::radians(cameraPitch));
+    front.z = sin(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
+    cameraFront = glm::normalize(front);
+}
+
 int main(void)
 {
     GLFWwindow* window;
@@ -168,6 +210,12 @@ int main(void)
 
     // Set the window resize callback
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+	// Set the mouse callback
+    glfwSetCursorPosCallback(window, mouse_callback);
+
+    // Hide the mouse cursor
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // Setup initial viewport size
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -369,9 +417,6 @@ int main(void)
 
         // Camera/View transformation
         glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
-        // Set the view matrix in the shader
-        unsigned int viewLoc = glGetUniformLocation(shader, "view");
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
