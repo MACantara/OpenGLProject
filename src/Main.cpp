@@ -266,13 +266,13 @@ int main(void)
     unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
     glUseProgram(shader);
 
-    // Set up the camera and projection
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 640.0f / 480.0f, 0.1f, 100.0f);
-    glm::mat4 view = glm::lookAt(
-        glm::vec3(4.0f, 4.0f, 4.0f), // Camera position
-        glm::vec3(0.0f, 0.0f, 0.0f), // Look at the origin
-        glm::vec3(0.0f, 1.0f, 0.0f)  // Up vector
-    );
+    // Define the model matrices for the cube and the sphere
+    glm::mat4 modelCube = glm::translate(glm::mat4(1.0f), glm::vec3(-0.75f, 0.0f, 0.0f)); // Move the cube to the left
+    glm::mat4 modelSphere = glm::translate(glm::mat4(1.0f), glm::vec3(0.75f, 0.0f, 0.0f)); // Move the sphere to the right
+
+    // Define the view and projection matrices
+    glm::mat4 view = glm::lookAt(glm::vec3(2.0f, 1.5f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
     glm::mat4 model = glm::mat4(1.0f); // Identity matrix for the model
 
     // Get uniform locations
@@ -312,13 +312,15 @@ int main(void)
         glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f); // White light
         glUniform3f(objectColorLoc, 0.5f, 0.1f, 0.3f); // Same object color as before
 
-        /* Draw the cube */
+        // Render the cube
         glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelCube));
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
-        // Draw the sphere
-        glm::mat4 sphereModel = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 1.0f, 0.0f)); // Position the sphere beside the cube
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(sphereModel));
+        // Render the sphere
+        glBindVertexArray(sphereVao);
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelSphere));
+        glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
 
         glBindVertexArray(sphereVao);
         glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, nullptr);
