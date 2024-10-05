@@ -16,6 +16,11 @@ const std::string WINDOW_TITLE = "Lighting of Cube and Sphere";
 const float M_PI = 3.14159265358979323846f;
 const float M_PI_2 = M_PI / 2.0f;
 
+glm::vec3 initialCameraPos = glm::vec3(0.0f, 1.0f, 6.0f);  // Default camera position
+float initialYaw = -90.0f;  // Default yaw value
+float initialPitch = 0.0f;  // Default pitch value
+glm::vec3 initialCameraFront = glm::vec3(0.0f, 0.0f, -1.0f);  // Default camera front direction
+
 glm::vec3 cameraPos = glm::vec3(0.0f, 1.0f, 6.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -383,6 +388,19 @@ int main(void)
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
+        // Close window on pressing ESC
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(window, true);
+
+        // Reset camera on pressing 'R'
+        if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+        {
+            cameraPos = initialCameraPos;
+            cameraYaw = initialYaw;
+            cameraPitch = initialPitch;
+            cameraFront = initialCameraFront;
+        }
+
         // Process input
         float deltaTime = 0.1f;  // Can adjust or calculate based on actual time elapsed
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
