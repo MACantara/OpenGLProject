@@ -211,6 +211,20 @@ int main(void)
         20, 21, 22, 22, 23, 20
     };
 
+    // Plane vertices (a flat square plane below the cube and sphere)
+    float planePositions[] = {
+        // Positions          // Normals
+        -2.0f,  0.0f, -2.0f,  0.0f, 1.0f, 0.0f,  // Bottom-left
+         2.0f,  0.0f, -2.0f,  0.0f, 1.0f, 0.0f,  // Bottom-right
+         2.0f,  0.0f,  2.0f,  0.0f, 1.0f, 0.0f,  // Top-right
+        -2.0f,  0.0f,  2.0f,  0.0f, 1.0f, 0.0f   // Top-left
+    };
+
+    unsigned int planeIndices[] = {
+        0, 1, 2,  // First triangle
+        2, 3, 0   // Second triangle
+    };
+
     // Create vertex buffer object
     unsigned int vao;
     glGenVertexArrays(1, &vao);
@@ -257,6 +271,25 @@ int main(void)
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (const void*)(sizeof(float) * 3)); // Normal
     glEnableVertexAttribArray(1);
 
+    // Plane VAO and VBO setup
+    unsigned int planeVao, planeVbo, planeIbo;
+    glGenVertexArrays(1, &planeVao);
+    glBindVertexArray(planeVao);
+
+    glGenBuffers(1, &planeVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, planeVbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(planePositions), planePositions, GL_STATIC_DRAW);
+
+    glGenBuffers(1, &planeIbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeIbo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(planeIndices), planeIndices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (void*)0); // Position
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (void*)(sizeof(float) * 3)); // Normal
+    glEnableVertexAttribArray(1);
+
     ShaderProgramSource source = ParseShader("res/shaders/Basic.shader");
     std::cout << "VERTEX SHADERS" << std::endl;
     std::cout << source.VertexSource << std::endl;
@@ -271,7 +304,7 @@ int main(void)
     glm::mat4 modelSphere = glm::translate(glm::mat4(1.0f), glm::vec3(0.75f, 0.0f, 0.0f)); // Move the sphere to the right
 
     // Define the view and projection matrices
-    glm::mat4 view = glm::lookAt(glm::vec3(2.0f, 1.5f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 view = glm::lookAt(glm::vec3(2.0f, 1.5f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
     glm::mat4 model = glm::mat4(1.0f); // Identity matrix for the model
 
@@ -313,17 +346,22 @@ int main(void)
         glUniform3f(objectColorLoc, 0.5f, 0.1f, 0.3f); // Same object color as before
 
         // Render the cube
+        model = glm::translate(glm::mat4(1.0f), glm::vec3(-0.75f, 0.5f, 0.0f));  // Left position
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glBindVertexArray(vao);
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelCube));
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
 
         // Render the sphere
+        model = glm::translate(glm::mat4(1.0f), glm::vec3(0.75f, 0.5f, 0.0f));   // Right position
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glBindVertexArray(sphereVao);
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelSphere));
         glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
 
-        glBindVertexArray(sphereVao);
-        glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, nullptr);
+        // Render the plane
+        model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -0.01f, 0.0f));  // Plane slightly below the objects
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        glBindVertexArray(planeVao);
+        glDrawElements(GL_TRIANGLES, sizeof(planeIndices) / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
