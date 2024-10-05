@@ -16,6 +16,12 @@ const std::string WINDOW_TITLE = "Lighting of Cube and Sphere";
 const float M_PI = 3.14159265358979323846f;
 const float M_PI_2 = M_PI / 2.0f;
 
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    // Adjust the viewport based on the new window dimensions
+    glViewport(0, 0, width, height);
+}
+
 struct ShaderProgramSource
 {
     std::string VertexSource;
@@ -154,6 +160,12 @@ int main(void)
         std::cout << "Failed to initialize GLEW" << std::endl;
 
 	std::cout << glGetString(GL_VERSION) << std::endl;
+
+    // Set the window resize callback
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    // Setup initial viewport size
+    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     /* Cube vertices */
     float positions[288] = {
