@@ -582,12 +582,7 @@ int main(void)
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-        // Define a static position for the light source
-        glm::vec3 lightPos = glm::vec3(0.0f, 0.0f, 0.0f);
-
         // Set up the locations of the shader uniforms
-        int lightPosLoc = glGetUniformLocation(shader, "lightPos");
-        int viewPosLoc = glGetUniformLocation(shader, "viewPos");
         int lightColorLoc = glGetUniformLocation(shader, "lightColor");
         int objectColorLoc = glGetUniformLocation(shader, "objectColor");
 
@@ -602,8 +597,6 @@ int main(void)
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
         // Pass light and view data to the shader
-        glUniform3fv(lightPosLoc, 1, glm::value_ptr(lightPos));
-        glUniform3fv(viewPosLoc, 1, glm::value_ptr(cameraPos));
         glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f); // White light
         glUniform3f(objectColorLoc, 0.5f, 0.1f, 0.3f); // Object color
 
@@ -622,6 +615,23 @@ int main(void)
         // For orbit lines
         glUniform1i(glGetUniformLocation(shader, "isOrbitLine"), true);
         glUniform3f(glGetUniformLocation(shader, "orbitColor"), 1.0f, 1.0f, 1.0f); // Example: White color for orbit lines
+
+        // Rendering the sun
+        glUniform1i(glGetUniformLocation(shader, "isSun"), true);
+
+        // Set emission color to orange-ish yellow
+        glm::vec3 emissionColor = glm::vec3(1.0f, 0.65f, 0.0f); // RGB values for orange-ish yellow
+        float emissionStrength = 0.10f; // Adjust strength based on desired brightness
+
+        int emissionColorLoc = glGetUniformLocation(shader, "emissionColor");
+        int emissionStrengthLoc = glGetUniformLocation(shader, "emissionStrength");
+
+        glUniform3fv(emissionColorLoc, 1, glm::value_ptr(emissionColor));
+        glUniform1f(emissionStrengthLoc, emissionStrength);
+
+        // Rendering the planets
+        glUniform1i(glGetUniformLocation(shader, "isSun"), false);
+
 
         // Draw orbits for each planet
         for (int i = 1; i < positions.size(); i++) {  // Start from 1 to skip the Sun
