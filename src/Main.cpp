@@ -49,7 +49,7 @@ bool firstMouse = true;  // Flag to ignore the first mouse movement
 bool cameraMovementEnabled = true; // Camera movement toggle
 
 // Define the mouse sensitivity
-float sensitivity = 0.1f;
+float mouseSensitivity = 0.1f;
 
 // Define an array to hold texture IDs
 std::array<unsigned int, 9> textureIds;
@@ -274,8 +274,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
     lastX = xpos;
     lastY = ypos;
 
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
+    xoffset *= mouseSensitivity;
+    yoffset *= mouseSensitivity;
 
     cameraYaw += xoffset;
     cameraPitch += yoffset;
