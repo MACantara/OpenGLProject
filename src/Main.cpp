@@ -100,10 +100,10 @@ const std::array<float, 9> orbitalRadii = {
     4.0f,  // Venus
     6.0f,  // Earth
     8.0f,  // Mars
-    10.0f, // Jupiter
-    12.0f, // Saturn
-    14.0f, // Uranus
-    16.0f  // Neptune
+    14.0f, // Jupiter (adjusted to be beyond the asteroid belt)
+    15.0f, // Saturn (adjusted accordingly)
+    17.0f, // Uranus (adjusted accordingly)
+    19.0f  // Neptune (adjusted accordingly)
 };
 
 // Orbital speeds for each planet (in radians per second)
@@ -140,8 +140,8 @@ float lastFrame = 0.0f; // Time of the last frame
 const int NUM_ASTEROIDS = 1000;
 const float ASTEROID_MIN_RADIUS = 0.05f;
 const float ASTEROID_MAX_RADIUS = 0.15f;
-const float BELT_INNER_RADIUS = 9.0f; // Between Mars (8.0f) and Jupiter (10.0f)
-const float BELT_OUTER_RADIUS = 10.0f;
+const float BELT_INNER_RADIUS = 10.0f; // Between Mars (8.0f) and Jupiter (14.0f)
+const float BELT_OUTER_RADIUS = 12.0f;
 
 // Load texture function
 GLuint loadTexture(const char* filePath) {
