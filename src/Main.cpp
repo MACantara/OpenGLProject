@@ -579,6 +579,13 @@ int main(void)
         glEnable(GL_LINE_SMOOTH);
         glLineWidth(1.0f); // Set line width if needed
 
+        // Enable blending
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        // Set the alpha value for orbit lines
+        glUniform1f(glGetUniformLocation(shader, "orbitAlpha"), 0.25f);
+
         // For orbit lines
         glUniform1i(glGetUniformLocation(shader, "isOrbitLine"), true);
         glUniform3f(glGetUniformLocation(shader, "orbitColor"), 1.0f, 1.0f, 1.0f); // Example: White color for orbit lines

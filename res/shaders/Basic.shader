@@ -39,6 +39,7 @@ uniform sampler2D textureSampler; // Texture sampler
 
 // New uniform for orbit color
 uniform vec3 orbitColor; // Color of the orbit lines
+uniform float orbitAlpha; // Alpha value for the orbit lines
 
 // New uniform to determine if the fragment is part of an orbit line
 uniform bool isOrbitLine; // Boolean to indicate if this fragment is an orbit line
@@ -71,7 +72,7 @@ void main()
     // Check if the fragment is part of an orbit line
     if (isOrbitLine) {
         // Use orbit color for orbit lines
-        color = vec4(orbitColor, 1.0);
+        color = vec4(orbitColor, orbitAlpha); // Set the alpha value for opacity
     } else {
         // Use the textured color for other fragments
         color = vec4(result * textureColor, 1.0);
