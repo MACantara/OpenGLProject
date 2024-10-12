@@ -507,8 +507,8 @@ int main(void)
         ImGui::NewFrame();
 
         // Your ImGui code (e.g., windows, controls, text, etc.)
-        ImGui::SetNextWindowSize(ImVec2(200, 85)); // Text instruction window size
-        ImGui::SetNextWindowPos(ImVec2(WINDOW_WIDTH - 210, 10)); // Position at top right
+        ImGui::SetNextWindowSize(ImVec2(250, 85)); // Text instruction window size
+        ImGui::SetNextWindowPos(ImVec2(WINDOW_WIDTH - 260, 10)); // Position at top right
 
         // Instructions
         ImGui::Begin("Instructions");
