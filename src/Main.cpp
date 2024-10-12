@@ -583,7 +583,7 @@ int main(void)
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
         // Define a static position for the light source
-        glm::vec3 lightPos = glm::vec3(0.0f, 1.0f, 2.0f); // Example position for the sun (x, y, z)
+        glm::vec3 lightPos = glm::vec3(0.0f, 0.0f, 0.0f);
 
         // Set up the locations of the shader uniforms
         int lightPosLoc = glGetUniformLocation(shader, "lightPos");
