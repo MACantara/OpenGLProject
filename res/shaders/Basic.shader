@@ -21,7 +21,6 @@ void main()
     gl_Position = projection * view * vec4(FragPos, 1.0);
 }
 
-
 #shader fragment
 #version 330 core
 
@@ -32,7 +31,7 @@ in vec3 FragPos; // Fragment position
 in vec2 TexCoord; // Interpolated texture coordinates
 
 // Uniforms for lighting
-uniform vec3 lightPos;    // Light position (dynamic)
+uniform vec3 lightPos;    // Light position (static)
 uniform vec3 viewPos;     // Camera position (for specular calculation)
 uniform vec3 lightColor;  // Light color
 uniform sampler2D textureSampler; // Texture sampler
@@ -43,6 +42,10 @@ uniform float orbitAlpha; // Alpha value for the orbit lines
 
 // New uniform to determine if the fragment is part of an orbit line
 uniform bool isOrbitLine; // Boolean to indicate if this fragment is an orbit line
+
+// Emission properties
+uniform vec3 emissionColor; // Color of the emission from the sun's surface
+uniform float emissionStrength; // Strength of the emission effect
 
 void main()
 {
@@ -66,15 +69,16 @@ void main()
     // Combine results
     vec3 result = (ambient + diffuse + specular);
 
-    // Apply texture color
-    vec3 textureColor = texture(textureSampler, TexCoord).rgb; // Fetch the texture color
+    // Fetch the texture color
+    vec3 textureColor = texture(textureSampler, TexCoord).rgb;
 
     // Check if the fragment is part of an orbit line
     if (isOrbitLine) {
         // Use orbit color for orbit lines
         color = vec4(orbitColor, orbitAlpha); // Set the alpha value for opacity
     } else {
-        // Use the textured color for other fragments
-        color = vec4(result * textureColor, 1.0);
+        // Apply emission effect
+        vec3 emittedLight = emissionColor * emissionStrength; // Compute the emitted light
+        color = vec4(result * textureColor + emittedLight, 1.0); // Combine with the existing color
     }
 }
