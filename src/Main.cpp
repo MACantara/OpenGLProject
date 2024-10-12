@@ -33,18 +33,18 @@ const int TEXT_INSTRUCTION_POS_X = (WINDOW_WIDTH - TEXT_INSTRUCTION_WIDTH) - TEX
 const int TEXT_INSTRUCTION_POS_Y = 10;
 
 // Define the camera parameters
-glm::vec3 initialCameraPos = glm::vec3(0.75f, 1.0f, 3.0f);  // Adjusted camera position (closer and above the sphere)
-float initialYaw = -90.0f;  // Default yaw value (this can remain the same)
-float initialPitch = -20.0f;  // Adjusted pitch to look down at the sphere
-glm::vec3 initialCameraFront = glm::vec3(0.0f, -0.2f, -1.0f);  // Slightly adjusted front direction to look down at the sphere
+glm::vec3 initialCameraPos = glm::vec3(0.0f, 20.0f, 20.0f);  // Positioned above and away from the center
+float initialYaw = -90.0f;  // Yaw adjusted to look diagonally across the solar system
+float initialPitch = -45.0f;  // Pitch set to -45 degrees for a top-down view
+glm::vec3 initialCameraFront = glm::normalize(glm::vec3(0.0f, -1.0f, -1.0f));  // Adjusted front direction for top-down view
 
-glm::vec3 cameraPos = glm::vec3(0.75f, 1.0f, 3.0f);  // Updated position
-glm::vec3 cameraFront = glm::vec3(0.0f, -0.2f, -1.0f);  // Updated front direction
+glm::vec3 cameraPos = glm::vec3(0.0f, 20.0f, 20.0f);  // Positioned above and away from the center
+glm::vec3 cameraFront = glm::normalize(glm::vec3(0.0f, -1.0f, -1.0f));  // Adjusted front direction for top-down view
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);  // Up vector remains unchanged
 float cameraSpeed = 0.1f;  // Adjust this speed as needed
 
-float cameraYaw = -90.0f;  // Yaw is initialized to -90.0 degrees (pointing towards negative z-axis)
-float cameraPitch = 0.0f;  // Pitch is initialized to 0.0 degrees
+float cameraYaw = -90.0f;
+float cameraPitch = -45.0f;
 float lastX = WINDOW_WIDTH / 2.0f;  // Last x-coordinate of the mouse
 float lastY = WINDOW_HEIGHT / 2.0f; // Last y-coordinate of the mouse
 bool firstMouse = true;  // Flag to ignore the first mouse movement
