@@ -563,18 +563,17 @@ int main(void)
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-        float time = glfwGetTime(); // Get the current time for dynamic light movement
-        float lightX = sin(time) * 2.0f;
-        float lightZ = cos(time) * 2.0f;
-        glm::vec3 lightPos = glm::vec3(lightX, 1.0f, lightZ);
+        // Define a static position for the light source
+        glm::vec3 lightPos = glm::vec3(0.0f, 1.0f, 2.0f); // Example position for the sun (x, y, z)
 
+        // Set up the locations of the shader uniforms
         int lightPosLoc = glGetUniformLocation(shader, "lightPos");
         int viewPosLoc = glGetUniformLocation(shader, "viewPos");
         int lightColorLoc = glGetUniformLocation(shader, "lightColor");
         int objectColorLoc = glGetUniformLocation(shader, "objectColor");
 
         // Camera position (you can update this based on user input if needed)
-        glm::vec3 viewPos = glm::vec3(2.0f, 2.0f, 2.0f);
+        glm::vec3 viewPos = glm::vec3(2.0f, 2.0f, 2.0f); // Example camera position
 
         // Camera/View transformation
         glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
@@ -590,7 +589,7 @@ int main(void)
         glUniform3fv(lightPosLoc, 1, glm::value_ptr(lightPos));
         glUniform3fv(viewPosLoc, 1, glm::value_ptr(viewPos));
         glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f); // White light
-        glUniform3f(objectColorLoc, 0.5f, 0.1f, 0.3f); // Same object color as before
+        glUniform3f(objectColorLoc, 0.5f, 0.1f, 0.3f); // Object color
 
         glActiveTexture(GL_TEXTURE0); // Activate texture unit 0
 
