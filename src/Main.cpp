@@ -91,6 +91,36 @@ const std::array<float, 9> positions = {
     16.0f  // Neptune
 };
 
+// Orbital radii (distance from the Sun) for each planet
+const std::array<float, 9> orbitalRadii = {
+    0.0f,  // Sun has no orbit
+    2.0f,  // Mercury
+    4.0f,  // Venus
+    6.0f,  // Earth
+    8.0f,  // Mars
+    10.0f, // Jupiter
+    12.0f, // Saturn
+    14.0f, // Uranus
+    16.0f  // Neptune
+};
+
+// Orbital speeds for each planet
+const std::array<float, 9> angularVelocities = {
+    0.0f,  // Sun
+    0.1f,  // Mercury
+    0.07f, // Venus
+    0.05f, // Earth
+    0.04f, // Mars
+    0.03f, // Jupiter
+    0.02f, // Saturn
+    0.01f, // Uranus
+    0.009f // Neptune
+};
+
+// Global time variable
+float deltaTime = 0.0f; // Time between frames
+float lastFrame = 0.0f; // Time of the last frame
+
 // Load texture function
 GLuint loadTexture(const char* filePath) {
     GLuint textureID;
@@ -322,21 +352,29 @@ void loadTextures() {
 
 // Function to render spheres
 void renderSpheres(GLuint shader, GLuint modelLoc, GLuint sphereVao, const std::vector<unsigned int>& sphereIndices) {
+    float currentTime = glfwGetTime();
+
     for (size_t i = 0; i < textureIds.size(); ++i) {
         glBindTexture(GL_TEXTURE_2D, textureIds[i]); // Bind the current texture
 
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(positions[i], 0.0f, 0.0f)); // Position
-        model = glm::scale(model, glm::vec3(scales[i])); // Scale
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        // Calculate angle and position for orbiting planets
+        float angle = angularVelocities[i] * currentTime; // Calculate angle based on time
+        float x = orbitalRadii[i] * cos(angle); // X position based on angle
+        float z = orbitalRadii[i] * sin(angle); // Z position based on angle
+
+        // Create the model matrix for the current planet
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x, 0.0f, z)); // Position based on orbit
+        model = glm::scale(model, glm::vec3(scales[i])); // Scale the planet
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model)); // Send the model matrix to the shader
 
         glUniform1i(glGetUniformLocation(shader, "textureSampler"), 0); // Assuming your shader uses "textureSampler"
 
         glBindVertexArray(sphereVao); // Use the same VAO for sphere geometry
-        glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0); // Draw the sphere
 
         glBindVertexArray(0);
-        glBindTexture(GL_TEXTURE_2D, 0);
-    };
+        glBindTexture(GL_TEXTURE_2D, 0); // Unbind the texture
+    }
 };
 
 int main(void)
