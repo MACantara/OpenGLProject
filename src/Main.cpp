@@ -572,9 +572,6 @@ int main(void)
         int lightColorLoc = glGetUniformLocation(shader, "lightColor");
         int objectColorLoc = glGetUniformLocation(shader, "objectColor");
 
-        // Camera position (you can update this based on user input if needed)
-        glm::vec3 viewPos = glm::vec3(2.0f, 2.0f, 2.0f); // Example camera position
-
         // Camera/View transformation
         glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
@@ -587,7 +584,7 @@ int main(void)
 
         // Pass light and view data to the shader
         glUniform3fv(lightPosLoc, 1, glm::value_ptr(lightPos));
-        glUniform3fv(viewPosLoc, 1, glm::value_ptr(viewPos));
+        glUniform3fv(viewPosLoc, 1, glm::value_ptr(cameraPos));
         glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f); // White light
         glUniform3f(objectColorLoc, 0.5f, 0.1f, 0.3f); // Object color
 
