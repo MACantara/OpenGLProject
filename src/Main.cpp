@@ -533,9 +533,14 @@ int main(void)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        // Instructions
+        // Get window size
+        int width, height;
+        glfwGetWindowSize(window, &width, &height);
+
+        // Text Instructions Window
         ImGui::Begin("Instructions", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
-        ImGui::SetWindowPos(ImVec2(TEXT_INSTRUCTION_POS_X, TEXT_INSTRUCTION_POS_Y)); // Position at top right
+        // Set the position of the ImGui Instructions window
+        ImGui::SetWindowPos(ImVec2(width - TEXT_INSTRUCTION_WIDTH - TEXT_INSTRUCTION_LEFT_MARGIN, TEXT_INSTRUCTION_POS_Y), ImGuiCond_Always);
 
         ImGui::Text("Use WASD to move around.");
         ImGui::Text("Press ESC to exit.");
