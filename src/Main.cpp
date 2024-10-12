@@ -533,12 +533,10 @@ int main(void)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        // Your ImGui code (e.g., windows, controls, text, etc.)
-        ImGui::SetNextWindowSize(ImVec2(TEXT_INSTRUCTION_WIDTH, TEXT_INSTRUCTION_HEIGHT)); // Text instruction window size
-        ImGui::SetNextWindowPos(ImVec2(TEXT_INSTRUCTION_POS_X, TEXT_INSTRUCTION_POS_Y)); // Position at top right
-
         // Instructions
-        ImGui::Begin("Instructions");
+        ImGui::Begin("Instructions", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+        ImGui::SetWindowPos(ImVec2(TEXT_INSTRUCTION_POS_X, TEXT_INSTRUCTION_POS_Y)); // Position at top right
+
         ImGui::Text("Use WASD to move around.");
         ImGui::Text("Press ESC to exit.");
 		ImGui::Text("Press R to reset camera position.");
@@ -546,12 +544,15 @@ int main(void)
 
         ImGui::End();
 
-        ImGui::Begin("Camera Control"); // Create a new ImGui window
-
-        ImGui::SetNextWindowSize(ImVec2(300, 50)); // Text instruction window size
+		// Camera control
+        ImGui::Begin("Camera Control", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
         ImGui::SliderFloat("Camera Speed", &cameraSpeed, 0.1f, 5.0f, "Speed: %.1f"); // Add a slider for camera speed
-
         ImGui::End(); // End the ImGui window
+
+        // Mouse sensitivity control
+        ImGui::Begin("Mouse Sensitivity", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+        ImGui::SliderFloat("Mouse Sensitivity", &mouseSensitivity, 0.1f, 5.0f, "Speed: %.1f");
+        ImGui::End();
 
         // Rendering ImGui
         ImGui::Render();
