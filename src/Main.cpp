@@ -14,6 +14,8 @@
 #include <sstream>
 #include <vector>
 #include <array>
+#include <cstdlib> // For rand() and srand()
+#include <ctime>   // For time()
 
 // Define the window dimensions
 const int WINDOW_WIDTH = 640, WINDOW_HEIGHT = 480;
@@ -133,6 +135,13 @@ const std::array<float, 9> rotationSpeeds = {
 // Global time variable
 float deltaTime = 0.0f; // Time between frames
 float lastFrame = 0.0f; // Time of the last frame
+
+// Define constants for the asteroid belt
+const int NUM_ASTEROIDS = 1000;
+const float ASTEROID_MIN_RADIUS = 0.05f;
+const float ASTEROID_MAX_RADIUS = 0.15f;
+const float BELT_INNER_RADIUS = 9.0f; // Between Mars (8.0f) and Jupiter (10.0f)
+const float BELT_OUTER_RADIUS = 10.0f;
 
 // Load texture function
 GLuint loadTexture(const char* filePath) {
@@ -406,6 +415,44 @@ void drawOrbit(float radius, int segments) {
     glEnd();
 };
 
+// Function to generate random float between min and max
+float randomFloat(float min, float max) {
+    return min + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (max - min)));
+}
+
+// Function to generate asteroid data
+void generateAsteroids(std::vector<glm::vec3>& positions, std::vector<float>& sizes) {
+    srand(static_cast<unsigned int>(time(0))); // Seed for random number generation
+
+    for (int i = 0; i < NUM_ASTEROIDS; ++i) {
+        float angle = randomFloat(0.0f, 2.0f * M_PI);
+        float distance = randomFloat(BELT_INNER_RADIUS, BELT_OUTER_RADIUS);
+        float x = distance * cos(angle);
+        float z = distance * sin(angle);
+        float y = randomFloat(-0.5f, 0.5f); // Small vertical variation
+
+        positions.push_back(glm::vec3(x, y, z));
+        sizes.push_back(randomFloat(ASTEROID_MIN_RADIUS, ASTEROID_MAX_RADIUS));
+    }
+}
+
+// Function to render asteroids
+void renderAsteroids(GLuint shader, GLuint modelLoc, GLuint sphereVao, const std::vector<unsigned int>& sphereIndices, GLuint asteroidTexture, const std::vector<glm::vec3>& positions, const std::vector<float>& sizes) {
+    glBindTexture(GL_TEXTURE_2D, asteroidTexture);
+
+    for (size_t i = 0; i < positions.size(); ++i) {
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), positions[i]);
+        model = glm::scale(model, glm::vec3(sizes[i]));
+
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+        glBindVertexArray(sphereVao);
+        glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
+    }
+
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
 
 int main(void)
 {
@@ -528,6 +575,14 @@ int main(void)
     ImGui_ImplGlfw_InitForOpenGL(window, true);  // Your GLFW window
     ImGui_ImplOpenGL3_Init("#version 130");  // GLSL version (adjust as needed)
 
+    // Load the asteroid texture
+    GLuint asteroidTexture = loadTexture("textures/asteroid.jpg");
+
+    // Generate asteroid data
+    std::vector<glm::vec3> asteroidPositions;
+    std::vector<float> asteroidSizes;
+    generateAsteroids(asteroidPositions, asteroidSizes);
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -623,6 +678,9 @@ int main(void)
         // For textured objects
         glUniform1i(glGetUniformLocation(shader, "isOrbitLine"), false);
         renderSpheres(shader, modelLoc, sphereVao, sphereIndices);
+
+        // Render the asteroid belt
+        renderAsteroids(shader, modelLoc, sphereVao, sphereIndices, asteroidTexture, asteroidPositions, asteroidSizes);
 
         // Start the ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
