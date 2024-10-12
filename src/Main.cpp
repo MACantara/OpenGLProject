@@ -285,100 +285,6 @@ int main(void)
     // Setup initial viewport size
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    /* Cube vertices */
-    float positions[288] = {
-        // Positions          // Normals
-        // Back face
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-
-        // Front face
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-
-        // Left face
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-
-        // Right face
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-
-         // Top face
-         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-          0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-          0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-         -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-
-         // Bottom face
-         -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-          0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-          0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-         -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f
-    };
-
-    /* Cube indices */
-    unsigned int indices[] = {
-        // Back face
-        0, 1, 2,   2, 3, 0,
-        // Front face
-        4, 5, 6,   6, 7, 4,
-        // Left face
-        8, 9, 10,  10, 11, 8,
-        // Right face
-        12, 13, 14, 14, 15, 12,
-        // Top face
-        16, 17, 18, 18, 19, 16,
-        // Bottom face
-        20, 21, 22, 22, 23, 20
-    };
-
-    // Plane vertices (a flat square plane below the cube and sphere)
-    float planePositions[] = {
-        // Positions          // Normals
-        -2.0f,  0.0f, -2.0f,  0.0f, 1.0f, 0.0f,  // Bottom-left
-         2.0f,  0.0f, -2.0f,  0.0f, 1.0f, 0.0f,  // Bottom-right
-         2.0f,  0.0f,  2.0f,  0.0f, 1.0f, 0.0f,  // Top-right
-        -2.0f,  0.0f,  2.0f,  0.0f, 1.0f, 0.0f   // Top-left
-    };
-
-    unsigned int planeIndices[] = {
-        0, 1, 2,  // First triangle
-        2, 3, 0   // Second triangle
-    };
-
-    // Create vertex buffer object
-    unsigned int vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
-
-    unsigned int ibo;
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (const void*)0); // Position
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (const void*)(sizeof(float) * 3)); // Normal
-    glEnableVertexAttribArray(1);
-
     // Create sphere
     std::vector<float> sphereVertices;
     std::vector<unsigned int> sphereIndices;
@@ -413,25 +319,6 @@ int main(void)
     // Unbind the VAO to avoid accidental modification
     glBindVertexArray(0);
 
-    // Plane VAO and VBO setup
-    unsigned int planeVao, planeVbo, planeIbo;
-    glGenVertexArrays(1, &planeVao);
-    glBindVertexArray(planeVao);
-
-    glGenBuffers(1, &planeVbo);
-    glBindBuffer(GL_ARRAY_BUFFER, planeVbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(planePositions), planePositions, GL_STATIC_DRAW);
-
-    glGenBuffers(1, &planeIbo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeIbo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(planeIndices), planeIndices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (void*)0); // Position
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (void*)(sizeof(float) * 3)); // Normal
-    glEnableVertexAttribArray(1);
-
     ShaderProgramSource source = ParseShader("res/shaders/Basic.shader");
     std::cout << "VERTEX SHADERS" << std::endl;
     std::cout << source.VertexSource << std::endl;
@@ -440,10 +327,6 @@ int main(void)
 
     unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
     glUseProgram(shader);
-
-    // Define the model matrices for the cube and the sphere
-    glm::mat4 modelCube = glm::translate(glm::mat4(1.0f), glm::vec3(-0.75f, 0.0f, 0.0f)); // Move the cube to the left
-    glm::mat4 modelSphere = glm::translate(glm::mat4(1.0f), glm::vec3(0.75f, 0.0f, 0.0f)); // Move the sphere to the right
 
     // Define the view and projection matrices
     glm::mat4 view = glm::lookAt(glm::vec3(2.0f, 1.5f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -539,12 +422,6 @@ int main(void)
         glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f); // White light
         glUniform3f(objectColorLoc, 0.5f, 0.1f, 0.3f); // Same object color as before
 
-        // Render the cube
-        model = glm::translate(glm::mat4(1.0f), glm::vec3(-0.75f, 0.5f, 0.0f));  // Left position
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
-
         // Render the sphere
         // Bind the texture
         glActiveTexture(GL_TEXTURE0); // Activate texture unit 0
@@ -564,13 +441,6 @@ int main(void)
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
 
-
-        // Render the plane
-        model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -0.01f, 0.0f));  // Plane slightly below the objects
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        glBindVertexArray(planeVao);
-        glDrawElements(GL_TRIANGLES, sizeof(planeIndices) / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
-
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
@@ -579,9 +449,6 @@ int main(void)
     }
 
     glDeleteProgram(shader);
-    glDeleteVertexArrays(1, &vao);
-    glDeleteBuffers(1, &buffer);
-    glDeleteBuffers(1, &ibo);
     glDeleteVertexArrays(1, &sphereVao);
     glDeleteBuffers(1, &sphereVbo);
     glDeleteBuffers(1, &sphereIbo);
