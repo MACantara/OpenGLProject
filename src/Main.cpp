@@ -30,6 +30,10 @@ const int TEXT_INSTRUCTION_LEFT_MARGIN = 10;
 const int TEXT_INSTRUCTION_POS_X = (WINDOW_WIDTH - TEXT_INSTRUCTION_WIDTH) - TEXT_INSTRUCTION_LEFT_MARGIN;
 const int TEXT_INSTRUCTION_POS_Y = 10;
 
+// Define the orbit and rotation speed slider parameters
+const int SLIDER_POS_X = 10;
+const int SLIDER_POS_Y = 200;
+
 // Define the camera parameters
 glm::vec3 initialCameraPos = glm::vec3(0.75f, 1.0f, 3.0f);  // Adjusted camera position (closer and above the sphere)
 float initialYaw = -90.0f;  // Default yaw value (this can remain the same)
@@ -665,6 +669,9 @@ int main(void)
         ImGui::End();
 
         ImGui::Begin("Planet Orbit and Rotation Speed Control", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+
+        // Set the position of the ImGui sliders window to the bottom left
+        ImGui::SetWindowPos(ImVec2(SLIDER_POS_X, height - SLIDER_POS_Y), ImGuiCond_Always); 
 
         // Slider for scale factor
         ImGui::SliderFloat("Scale Factor", &scaleFactor, 1.0f, 20.0f);
