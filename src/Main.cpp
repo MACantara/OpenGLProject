@@ -15,12 +15,14 @@
 #include <vector>
 #include <array>
 
+// Define the window dimensions
 const int WINDOW_WIDTH = 640, WINDOW_HEIGHT = 480;
 const std::string WINDOW_TITLE = "Lighting of Cube and Sphere";
 
 const float M_PI = 3.14159265358979323846f;
 const float M_PI_2 = M_PI / 2.0f;
 
+// Define the camera parameters
 glm::vec3 initialCameraPos = glm::vec3(0.75f, 1.0f, 3.0f);  // Adjusted camera position (closer and above the sphere)
 float initialYaw = -90.0f;  // Default yaw value (this can remain the same)
 float initialPitch = -20.0f;  // Adjusted pitch to look down at the sphere
@@ -36,8 +38,10 @@ float cameraPitch = 0.0f;  // Pitch is initialized to 0.0 degrees
 float lastX = WINDOW_WIDTH / 2.0f;  // Last x-coordinate of the mouse
 float lastY = WINDOW_HEIGHT / 2.0f; // Last y-coordinate of the mouse
 bool firstMouse = true;  // Flag to ignore the first mouse movement
+bool cameraMovementEnabled = true; // Camera movement toggle
 
-float sensitivity = 0.1f;  // Sensitivity for the mouse movement
+// Define the mouse sensitivity
+float sensitivity = 0.1f;
 
 // Define an array to hold texture IDs
 std::array<unsigned int, 9> textureIds;
@@ -248,17 +252,17 @@ void generateSphere(float radius, unsigned int rings, unsigned int sectors, std:
     }
 }
 
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-    if (firstMouse)
-    {
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+    if (!cameraMovementEnabled) return; // Do not update if movement is disabled
+
+    if (firstMouse) {
         lastX = xpos;
         lastY = ypos;
         firstMouse = false;
     }
 
     float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos;  // Reversed since y-coordinates range from bottom to top
+    float yoffset = lastY - ypos;
     lastX = xpos;
     lastY = ypos;
 
@@ -268,18 +272,28 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     cameraYaw += xoffset;
     cameraPitch += yoffset;
 
-    // Constrain the pitch so the camera doesn't flip over
-    if (cameraPitch > 89.0f)
-        cameraPitch = 89.0f;
-    if (cameraPitch < -89.0f)
-        cameraPitch = -89.0f;
+    // Constrain pitch
+    if (cameraPitch > 89.0f) cameraPitch = 89.0f;
+    if (cameraPitch < -89.0f) cameraPitch = -89.0f;
 
-    // Update cameraFront vector
+    // Update camera front vector
     glm::vec3 front;
     front.x = cos(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
     front.y = sin(glm::radians(cameraPitch));
     front.z = sin(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
     cameraFront = glm::normalize(front);
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
+        cameraMovementEnabled = !cameraMovementEnabled; // Toggle camera movement
+        if (cameraMovementEnabled) {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Hide cursor
+        }
+        else {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); // Show cursor
+        }
+    }
 }
 
 // Function to load textures
@@ -345,7 +359,10 @@ int main(void)
     // Set the window resize callback
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-	// Set the mouse callback
+    // Set key callback function
+    glfwSetKeyCallback(window, key_callback);
+
+    // Set mouse callback function
     glfwSetCursorPosCallback(window, mouse_callback);
 
     // Hide the mouse cursor
@@ -408,7 +425,9 @@ int main(void)
     glm::mat4 modelSphere = glm::translate(glm::mat4(1.0f), glm::vec3(0.75f, 0.0f, 0.0f)); // Move the sphere to the right
 
     // Define the view and projection matrices
-    glm::mat4 view = glm::lookAt(glm::vec3(2.0f, 1.5f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    // Use camera position and front vector for view matrix
+    glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
     glm::mat4 model = glm::mat4(1.0f); // Identity matrix for the model
 
@@ -507,7 +526,7 @@ int main(void)
         ImGui::NewFrame();
 
         // Your ImGui code (e.g., windows, controls, text, etc.)
-        ImGui::SetNextWindowSize(ImVec2(250, 85)); // Text instruction window size
+        ImGui::SetNextWindowSize(ImVec2(250, 100)); // Text instruction window size
         ImGui::SetNextWindowPos(ImVec2(WINDOW_WIDTH - 260, 10)); // Position at top right
 
         // Instructions
@@ -515,6 +534,7 @@ int main(void)
         ImGui::Text("Use WASD to move around.");
         ImGui::Text("Press ESC to exit.");
 		ImGui::Text("Press R to reset camera position.");
+		ImGui::Text("Press C to toggle camera movement.");
 
         ImGui::End();
 
