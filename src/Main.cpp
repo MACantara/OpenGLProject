@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <SOIL2/SOIL2.h>
 
 #include <iostream>
 #include <fstream>
@@ -16,14 +17,14 @@ const std::string WINDOW_TITLE = "Lighting of Cube and Sphere";
 const float M_PI = 3.14159265358979323846f;
 const float M_PI_2 = M_PI / 2.0f;
 
-glm::vec3 initialCameraPos = glm::vec3(0.0f, 1.0f, 6.0f);  // Default camera position
-float initialYaw = -90.0f;  // Default yaw value
-float initialPitch = 0.0f;  // Default pitch value
-glm::vec3 initialCameraFront = glm::vec3(0.0f, 0.0f, -1.0f);  // Default camera front direction
+glm::vec3 initialCameraPos = glm::vec3(0.75f, 1.0f, 3.0f);  // Adjusted camera position (closer and above the sphere)
+float initialYaw = -90.0f;  // Default yaw value (this can remain the same)
+float initialPitch = -20.0f;  // Adjusted pitch to look down at the sphere
+glm::vec3 initialCameraFront = glm::vec3(0.0f, -0.2f, -1.0f);  // Slightly adjusted front direction to look down at the sphere
 
-glm::vec3 cameraPos = glm::vec3(0.0f, 1.0f, 6.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+glm::vec3 cameraPos = glm::vec3(0.75f, 1.0f, 3.0f);  // Updated position
+glm::vec3 cameraFront = glm::vec3(0.0f, -0.2f, -1.0f);  // Updated front direction
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);  // Up vector remains unchanged
 float cameraSpeed = 0.1f;  // Adjust this speed as needed
 
 float cameraYaw = -90.0f;  // Yaw is initialized to -90.0 degrees (pointing towards negative z-axis)
@@ -33,6 +34,37 @@ float lastY = WINDOW_HEIGHT / 2.0f; // Last y-coordinate of the mouse
 bool firstMouse = true;  // Flag to ignore the first mouse movement
 
 float sensitivity = 0.1f;  // Sensitivity for the mouse movement
+
+// Load texture function
+GLuint loadTexture(const char* filePath) {
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    // Load the texture using SOIL
+    int width, height;
+    unsigned char* image = SOIL_load_image(filePath, &width, &height, 0, SOIL_LOAD_RGB);
+
+    if (image == nullptr) {
+        std::cerr << "Failed to load texture: " << filePath << std::endl;
+        return 0;
+    }
+
+    // Set texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // Upload the texture to GPU
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    // Free the image memory
+    SOIL_free_image_data(image);
+
+    return textureID;
+}
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -125,33 +157,50 @@ static unsigned int CreateShader(const std::string& vertexShader, const std::str
 void generateSphere(float radius, unsigned int rings, unsigned int sectors, std::vector<float>& vertices, std::vector<unsigned int>& indices) {
     float const R = 1.0f / (float)(rings - 1);
     float const S = 1.0f / (float)(sectors - 1);
-    int r, s;
+    vertices.clear();
+    indices.clear();
 
-    vertices.resize(rings * sectors * 6);
-    std::vector<float>::iterator v = vertices.begin();
-    for (r = 0; r < rings; r++) for (s = 0; s < sectors; s++) {
-        float const y = sin(-M_PI_2 + M_PI * r * R);
-        float const x = cos(2 * M_PI * s * S) * sin(M_PI * r * R);
-        float const z = sin(2 * M_PI * s * S) * sin(M_PI * r * R);
+    // Vertex generation
+    for (unsigned int r = 0; r < rings; r++) {
+        for (unsigned int s = 0; s < sectors; s++) {
+            float const y = sin(-M_PI_2 + M_PI * r * R);
+            float const x = cos(2 * M_PI * s * S) * sin(M_PI * r * R);
+            float const z = sin(2 * M_PI * s * S) * sin(M_PI * r * R);
 
-        *v++ = x * radius;
-        *v++ = y * radius;
-        *v++ = z * radius;
+            // Vertex position
+            vertices.push_back(x * radius); // x
+            vertices.push_back(y * radius); // y
+            vertices.push_back(z * radius); // z
 
-        *v++ = x;
-        *v++ = y;
-        *v++ = z;
+            // Normal
+            vertices.push_back(x);           // nx
+            vertices.push_back(y);           // ny
+            vertices.push_back(z);           // nz
+
+            // Texture coordinates (u, v)
+            float u = s * S;
+            float v = r * R;
+            vertices.push_back(u);           // u
+            vertices.push_back(v);           // v
+        }
     }
 
-    indices.resize(rings * sectors * 6);
-    std::vector<unsigned int>::iterator i = indices.begin();
-    for (r = 0; r < rings - 1; r++) for (s = 0; s < sectors - 1; s++) {
-        *i++ = r * sectors + s;
-        *i++ = r * sectors + (s + 1);
-        *i++ = (r + 1) * sectors + (s + 1);
-        *i++ = (r + 1) * sectors + (s + 1);
-        *i++ = (r + 1) * sectors + s;
-        *i++ = r * sectors + s;
+    // Index generation
+    for (unsigned int r = 0; r < rings - 1; r++) {
+        for (unsigned int s = 0; s < sectors - 1; s++) {
+            unsigned int first = r * sectors + s;
+            unsigned int second = r * sectors + (s + 1);
+            unsigned int third = (r + 1) * sectors + (s + 1);
+            unsigned int fourth = (r + 1) * sectors + s;
+
+            // Two triangles per quad
+            indices.push_back(first);
+            indices.push_back(second);
+            indices.push_back(third);
+            indices.push_back(third);
+            indices.push_back(fourth);
+            indices.push_back(first);
+        }
     }
 }
 
@@ -188,8 +237,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     front.z = sin(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
     cameraFront = glm::normalize(front);
 }
-
-#include <iostream>  // For std::cout
 
 void printInstructions()
 {
@@ -332,6 +379,7 @@ int main(void)
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (const void*)(sizeof(float) * 3)); // Normal
     glEnableVertexAttribArray(1);
 
+    // Create sphere
     std::vector<float> sphereVertices;
     std::vector<unsigned int> sphereIndices;
     generateSphere(0.5f, 20, 20, sphereVertices, sphereIndices);
@@ -340,19 +388,30 @@ int main(void)
     glGenVertexArrays(1, &sphereVao);
     glBindVertexArray(sphereVao);
 
+    // Vertex Buffer Object
     glGenBuffers(1, &sphereVbo);
     glBindBuffer(GL_ARRAY_BUFFER, sphereVbo);
-    glBufferData(GL_ARRAY_BUFFER, sphereVertices.size() * sizeof(float), &sphereVertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sphereVertices.size() * sizeof(float), sphereVertices.data(), GL_STATIC_DRAW);
 
+    // Element Buffer Object
     glGenBuffers(1, &sphereIbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphereIbo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphereIndices.size() * sizeof(unsigned int), &sphereIndices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphereIndices.size() * sizeof(unsigned int), sphereIndices.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (const void*)0); // Position
+    // Position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (const void*)0); // Position
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (const void*)(sizeof(float) * 3)); // Normal
+    // Normal attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (const void*)(sizeof(float) * 3)); // Normal
     glEnableVertexAttribArray(1);
+
+    // Texture coordinates attribute
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (const void*)(sizeof(float) * 6)); // Texture coordinates
+    glEnableVertexAttribArray(2);
+
+    // Unbind the VAO to avoid accidental modification
+    glBindVertexArray(0);
 
     // Plane VAO and VBO setup
     unsigned int planeVao, planeVbo, planeIbo;
@@ -400,6 +459,21 @@ int main(void)
 
     // Print control instructions
     printInstructions();
+
+    unsigned int sphereTextureId; // Declare the texture ID variable
+
+    // Load the texture using Soil2
+    sphereTextureId = SOIL_load_OGL_texture(
+        "textures/earth.jpg",    // Path to the texture file
+        SOIL_LOAD_AUTO,          // Load format (automatic)
+        SOIL_CREATE_NEW_ID,      // Create new texture ID
+        SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS // Invert Y and repeat the texture
+    );
+
+    // Check if the texture was loaded successfully
+    if (sphereTextureId == 0) {
+        std::cerr << "Failed to load texture" << std::endl;
+    }
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -472,10 +546,24 @@ int main(void)
         glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
 
         // Render the sphere
-        model = glm::translate(glm::mat4(1.0f), glm::vec3(0.75f, 0.5f, 0.0f));   // Right position
+        // Bind the texture
+        glActiveTexture(GL_TEXTURE0); // Activate texture unit 0
+        glBindTexture(GL_TEXTURE_2D, sphereTextureId); // Bind the sphere texture
+
+        // Render the sphere
+        model = glm::translate(glm::mat4(1.0f), glm::vec3(0.75f, 0.5f, 0.0f)); // Right position
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+        // Pass the texture sampler uniform to the shader
+        glUniform1i(glGetUniformLocation(shader, "textureSampler"), 0); // Assuming your shader uses "textureSampler"
+
         glBindVertexArray(sphereVao);
         glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
+
+        // Unbind the VAO and texture (optional, for good practice)
+        glBindVertexArray(0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
 
         // Render the plane
         model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -0.01f, 0.0f));  // Plane slightly below the objects

@@ -3,6 +3,7 @@
 
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 normal;
+layout(location = 2) in vec2 texCoord; // Add texture coordinate attribute
 
 uniform mat4 model;
 uniform mat4 view;
@@ -10,11 +11,13 @@ uniform mat4 projection;
 
 out vec3 Normal;  // Pass the normal to the fragment shader
 out vec3 FragPos; // Pass the fragment position
+out vec2 TexCoord; // Pass the texture coordinates to the fragment shader
 
 void main()
 {
     FragPos = vec3(model * vec4(position, 1.0));
     Normal = mat3(transpose(inverse(model))) * normal; // Transform normal to world coordinates
+    TexCoord = texCoord; // Pass texture coordinates
     gl_Position = projection * view * vec4(FragPos, 1.0);
 }
 
@@ -25,12 +28,13 @@ layout(location = 0) out vec4 color;
 
 in vec3 Normal;  // Interpolated normal from the vertex shader
 in vec3 FragPos; // Fragment position
+in vec2 TexCoord; // Interpolated texture coordinates
 
 // Uniforms for lighting
 uniform vec3 lightPos;    // Light position (dynamic)
 uniform vec3 viewPos;     // Camera position (for specular calculation)
 uniform vec3 lightColor;  // Light color
-uniform vec3 objectColor; // Cube color
+uniform sampler2D textureSampler; // Texture sampler
 
 void main()
 {
@@ -52,6 +56,11 @@ void main()
     vec3 specular = specularStrength * spec * lightColor;
 
     // Combine results
-    vec3 result = (ambient + diffuse + specular) * objectColor;
+    vec3 result = (ambient + diffuse + specular);
+
+    // Apply texture color
+    vec3 textureColor = texture(textureSampler, TexCoord).rgb; // Fetch the texture color
+    result *= textureColor; // Combine lighting with texture color
+
     color = vec4(result, 1.0);
 }
