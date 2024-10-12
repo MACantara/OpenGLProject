@@ -142,6 +142,8 @@ const float ASTEROID_MIN_RADIUS = 0.05f;
 const float ASTEROID_MAX_RADIUS = 0.15f;
 const float BELT_INNER_RADIUS = 10.0f; // Between Mars (8.0f) and Jupiter (14.0f)
 const float BELT_OUTER_RADIUS = 12.0f;
+const float MIN_ROTATION_SPEED = 0.0001f;
+const float MAX_ROTATION_SPEED = 0.001f;
 
 // Load texture function
 GLuint loadTexture(const char* filePath) {
@@ -421,7 +423,7 @@ float randomFloat(float min, float max) {
 }
 
 // Function to generate asteroid data
-void generateAsteroids(std::vector<glm::vec3>& positions, std::vector<float>& sizes) {
+void generateAsteroids(std::vector<glm::vec3>& positions, std::vector<float>& sizes, std::vector<float>& rotationSpeeds) {
     srand(static_cast<unsigned int>(time(0))); // Seed for random number generation
 
     for (int i = 0; i < NUM_ASTEROIDS; ++i) {
@@ -433,6 +435,19 @@ void generateAsteroids(std::vector<glm::vec3>& positions, std::vector<float>& si
 
         positions.push_back(glm::vec3(x, y, z));
         sizes.push_back(randomFloat(ASTEROID_MIN_RADIUS, ASTEROID_MAX_RADIUS));
+        rotationSpeeds.push_back(randomFloat(MIN_ROTATION_SPEED, MAX_ROTATION_SPEED));
+    }
+}
+
+// Function to update asteroid positions
+void updateAsteroids(std::vector<glm::vec3>& positions, const std::vector<float>& rotationSpeeds) {
+    for (size_t i = 0; i < positions.size(); ++i) {
+        float angle = atan2(positions[i].z, positions[i].x);
+        float distance = glm::length(glm::vec2(positions[i].x, positions[i].z));
+        angle += rotationSpeeds[i];
+
+        positions[i].x = distance * cos(angle);
+        positions[i].z = distance * sin(angle);
     }
 }
 
@@ -581,7 +596,8 @@ int main(void)
     // Generate asteroid data
     std::vector<glm::vec3> asteroidPositions;
     std::vector<float> asteroidSizes;
-    generateAsteroids(asteroidPositions, asteroidSizes);
+    std::vector<float> asteroidRotationSpeeds;
+    generateAsteroids(asteroidPositions, asteroidSizes, asteroidRotationSpeeds);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -678,6 +694,9 @@ int main(void)
         // For textured objects
         glUniform1i(glGetUniformLocation(shader, "isOrbitLine"), false);
         renderSpheres(shader, modelLoc, sphereVao, sphereIndices);
+
+        // Update asteroid positions
+        updateAsteroids(asteroidPositions, asteroidRotationSpeeds);
 
         // Render the asteroid belt
         renderAsteroids(shader, modelLoc, sphereVao, sphereIndices, asteroidTexture, asteroidPositions, asteroidSizes);
