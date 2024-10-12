@@ -104,30 +104,30 @@ const std::array<float, 9> orbitalRadii = {
     16.0f  // Neptune
 };
 
-// Orbital speeds for each planet
+// Orbital speeds for each planet (in radians per second)
 const std::array<float, 9> angularVelocities = {
-    0.0f,  // Sun
-    0.1f,  // Mercury
-    0.07f, // Venus
-    0.05f, // Earth
-    0.04f, // Mars
-    0.03f, // Jupiter
-    0.02f, // Saturn
-    0.01f, // Uranus
-    0.009f // Neptune
+    0.0f,    // Sun
+    0.033f,  // Mercury
+    0.023f,  // Venus
+    0.017f,  // Earth
+    0.013f,  // Mars
+    0.01f,   // Jupiter
+    0.007f,  // Saturn
+    0.004f,  // Uranus
+    0.003f   // Neptune
 };
 
 // Rotation speeds for each planet (in radians per second)
 const std::array<float, 9> rotationSpeeds = {
-    0.0f,     // Sun (no rotation speed for the purpose of this simulation)
-    1.24e-5f, // Mercury
-    3.33e-6f, // Venus
-    7.27e-5f, // Earth
-    7.45e-5f, // Mars
-    1.67e-4f, // Jupiter
-    1.56e-4f, // Saturn
-    9.89e-5f, // Uranus
-    1.03e-4f  // Neptune
+    0.0f,    // Sun
+    0.25f,   // Mercury
+    0.125f,  // Venus
+    0.15f,   // Earth
+    0.1f,    // Mars
+    0.075f,  // Jupiter
+    0.05f,   // Saturn
+    0.025f,  // Uranus
+    0.0225f  // Neptune
 };
 
 // Global time variable
