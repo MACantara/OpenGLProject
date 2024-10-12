@@ -673,11 +673,41 @@ int main(void)
         // Set the position of the ImGui sliders window to the bottom left
         ImGui::SetWindowPos(ImVec2(SLIDER_POS_X, height - SLIDER_POS_Y), ImGuiCond_Always); 
 
-        // Slider for scale factor
-        ImGui::SliderFloat("Scale Factor", &scaleFactor, 1.0f, 20.0f);
-
-        // Update speeds whenever the slider is adjusted
-        UpdateSpeeds();
+        // Define the multiplier buttons
+        if (ImGui::Button("1x")) {
+            scaleFactor = 1.0f;
+            UpdateSpeeds();
+        }
+        ImGui::SameLine(); // Keep buttons in the same line
+        if (ImGui::Button("2x")) {
+            scaleFactor = 2.0f;
+            UpdateSpeeds();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("3x")) {
+            scaleFactor = 3.0f;
+            UpdateSpeeds();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("5x")) {
+            scaleFactor = 5.0f;
+            UpdateSpeeds();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("10x")) {
+            scaleFactor = 10.0f;
+            UpdateSpeeds();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("15x")) {
+            scaleFactor = 15.0f;
+            UpdateSpeeds();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("20x")) {
+            scaleFactor = 20.0f;
+            UpdateSpeeds();
+        }
 
         // Display current speeds
         for (size_t i = 1; i < 9; ++i) { // Start from 1 to skip the Sun
