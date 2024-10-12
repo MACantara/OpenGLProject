@@ -461,6 +461,7 @@ int main(void)
     printInstructions();
 
     unsigned int sphereTextureId; // Declare the texture ID variable
+    unsigned int sunTextureId; // Declare the texture ID variable
 
     // Load the texture using Soil2
     sphereTextureId = SOIL_load_OGL_texture(
@@ -470,10 +471,23 @@ int main(void)
         SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS // Invert Y and repeat the texture
     );
 
-    // Check if the texture was loaded successfully
+    // Check if the earth texture was loaded successfully
     if (sphereTextureId == 0) {
-        std::cerr << "Failed to load texture" << std::endl;
+        std::cerr << "Failed to load earth texture" << std::endl;
     }
+
+    sunTextureId = SOIL_load_OGL_texture(
+		"textures/sun.jpg",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS
+	);
+
+    // Check if the sun texture was loaded successfully
+	if (sunTextureId == 0) {
+		std::cerr << "Failed to load sun texture" << std::endl;
+	}
+
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -545,7 +559,7 @@ int main(void)
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
 
-        // Render the sphere
+        // Render the Earth sphere
         // Bind the texture
         glActiveTexture(GL_TEXTURE0); // Activate texture unit 0
         glBindTexture(GL_TEXTURE_2D, sphereTextureId); // Bind the sphere texture
@@ -564,6 +578,14 @@ int main(void)
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
 
+        // Render the Sun
+        model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));   // Sun at the center
+        model = glm::scale(model, glm::vec3(2.0f)); // Scale the Sun to make it larger
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+        glBindTexture(GL_TEXTURE_2D, sunTextureId); // Bind the Sun texture
+        glBindVertexArray(sphereVao);
+        glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
 
         // Render the plane
         model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -0.01f, 0.0f));  // Plane slightly below the objects
