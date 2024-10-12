@@ -105,7 +105,7 @@ const std::array<float, 9> orbitalRadii = {
 };
 
 // Orbital speeds for each planet (in radians per second)
-const std::array<float, 9> angularVelocities = {
+const std::array<float, 9> originalAngularVelocities = {
     0.0f,    // Sun
     0.033f,  // Mercury
     0.023f,  // Venus
@@ -118,7 +118,7 @@ const std::array<float, 9> angularVelocities = {
 };
 
 // Rotation speeds for each planet (in radians per second)
-const std::array<float, 9> rotationSpeeds = {
+const std::array<float, 9> originalRotationSpeeds = {
     0.0f,    // Sun
     0.25f,   // Mercury
     0.125f,  // Venus
@@ -129,6 +129,21 @@ const std::array<float, 9> rotationSpeeds = {
     0.025f,  // Uranus
     0.0225f  // Neptune
 };
+
+// Variables to hold current speeds
+std::array<float, 9> angularVelocities;
+std::array<float, 9> rotationSpeeds;
+
+// Scale factor (default to 1.0)
+float scaleFactor = 1.0f;
+
+// Function to update speeds based on scale factor
+void UpdateSpeeds() {
+    for (size_t i = 0; i < 9; ++i) {
+        angularVelocities[i] = originalAngularVelocities[i] * scaleFactor;
+        rotationSpeeds[i] = originalRotationSpeeds[i] * scaleFactor;
+    }
+}
 
 // Global time variable
 float deltaTime = 0.0f; // Time between frames
@@ -647,6 +662,24 @@ int main(void)
         // Mouse sensitivity control
         ImGui::Begin("Mouse Sensitivity", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
         ImGui::SliderFloat("Mouse Sensitivity", &mouseSensitivity, 0.1f, 5.0f, "Speed: %.1f");
+        ImGui::End();
+
+        ImGui::Begin("Planet Orbit and Rotation Speed Control", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+
+        // Slider for scale factor
+        ImGui::SliderFloat("Scale Factor", &scaleFactor, 1.0f, 20.0f);
+
+        // Update speeds whenever the slider is adjusted
+        UpdateSpeeds();
+
+        // Display current speeds
+        for (size_t i = 1; i < 9; ++i) { // Start from 1 to skip the Sun
+            ImGui::Text("Planet %zu: Orbital Speed: %.3f, Rotation Speed: %.3f",
+                i,
+                angularVelocities[i],
+                rotationSpeeds[i]);
+        }
+
         ImGui::End();
 
         // Rendering ImGui
