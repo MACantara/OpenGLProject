@@ -377,6 +377,18 @@ void renderSpheres(GLuint shader, GLuint modelLoc, GLuint sphereVao, const std::
     }
 };
 
+void drawOrbit(float radius, int segments) {
+    glBegin(GL_LINE_STRIP);
+    for (int i = 0; i <= segments; i++) {
+        float theta = 2.0f * M_PI * float(i) / float(segments);
+        float x = radius * cosf(theta);
+        float z = radius * sinf(theta);
+        glVertex3f(x, 0.0f, z);
+    }
+    glEnd();
+};
+
+
 int main(void)
 {
     GLFWwindow* window;
@@ -564,6 +576,21 @@ int main(void)
 
         glActiveTexture(GL_TEXTURE0); // Activate texture unit 0
 
+        glEnable(GL_LINE_SMOOTH);
+        glLineWidth(1.0f); // Set line width if needed
+
+        // For orbit lines
+        glUniform1i(glGetUniformLocation(shader, "isOrbitLine"), true);
+        glUniform3f(glGetUniformLocation(shader, "orbitColor"), 1.0f, 1.0f, 1.0f); // Example: White color for orbit lines
+
+        // Draw orbits for each planet
+        for (int i = 1; i < positions.size(); i++) {  // Start from 1 to skip the Sun
+            glColor3f(1.0f, 1.0f, 1.0f); // Set orbit color (white)
+            drawOrbit(orbitalRadii[i], 100); // 100 segments for smoothness
+        }
+
+        // For textured objects
+        glUniform1i(glGetUniformLocation(shader, "isOrbitLine"), false);
         renderSpheres(shader, modelLoc, sphereVao, sphereIndices);
 
         // Start the ImGui frame

@@ -21,6 +21,7 @@ void main()
     gl_Position = projection * view * vec4(FragPos, 1.0);
 }
 
+
 #shader fragment
 #version 330 core
 
@@ -35,6 +36,12 @@ uniform vec3 lightPos;    // Light position (dynamic)
 uniform vec3 viewPos;     // Camera position (for specular calculation)
 uniform vec3 lightColor;  // Light color
 uniform sampler2D textureSampler; // Texture sampler
+
+// New uniform for orbit color
+uniform vec3 orbitColor; // Color of the orbit lines
+
+// New uniform to determine if the fragment is part of an orbit line
+uniform bool isOrbitLine; // Boolean to indicate if this fragment is an orbit line
 
 void main()
 {
@@ -60,7 +67,13 @@ void main()
 
     // Apply texture color
     vec3 textureColor = texture(textureSampler, TexCoord).rgb; // Fetch the texture color
-    result *= textureColor; // Combine lighting with texture color
 
-    color = vec4(result, 1.0);
+    // Check if the fragment is part of an orbit line
+    if (isOrbitLine) {
+        // Use orbit color for orbit lines
+        color = vec4(orbitColor, 1.0);
+    } else {
+        // Use the textured color for other fragments
+        color = vec4(result * textureColor, 1.0);
+    }
 }
