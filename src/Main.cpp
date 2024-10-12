@@ -242,17 +242,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     cameraFront = glm::normalize(front);
 }
 
-void printInstructions()
-{
-    std::cout << "Controls:" << std::endl;
-    std::cout << "W - Move forward" << std::endl;
-    std::cout << "S - Move backward" << std::endl;
-    std::cout << "A - Move left" << std::endl;
-    std::cout << "D - Move right" << std::endl;
-    std::cout << "R - Reset camera position" << std::endl;
-    std::cout << "ESC - Close the window" << std::endl;
-}   
-
 // Define an array to hold texture IDs
 std::array<unsigned int, 9> textureIds;
 
@@ -429,9 +418,6 @@ int main(void)
     int projLoc = glGetUniformLocation(shader, "projection");
 
     glEnable(GL_DEPTH_TEST);
-
-    // Print control instructions
-    printInstructions();
 
     loadTextures();
 
