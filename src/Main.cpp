@@ -370,6 +370,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         cameraMovementEnabled = !cameraMovementEnabled; // Toggle camera movement
         if (cameraMovementEnabled) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Hide cursor
+            firstMouse = true; // Reset the firstMouse flag
         }
         else {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); // Show cursor
