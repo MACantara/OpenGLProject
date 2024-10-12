@@ -105,9 +105,9 @@ const std::array<float, 9> orbitalRadii = {
     6.0f,  // Earth
     8.0f,  // Mars
     14.0f, // Jupiter (adjusted to be beyond the asteroid belt)
-    15.0f, // Saturn (adjusted accordingly)
-    17.0f, // Uranus (adjusted accordingly)
-    19.0f  // Neptune (adjusted accordingly)
+    16.0f, // Saturn (adjusted accordingly)
+    18.0f, // Uranus (adjusted accordingly)
+    20.0f  // Neptune (adjusted accordingly)
 };
 
 // Orbital speeds for each planet (in radians per second)
