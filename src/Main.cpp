@@ -353,22 +353,17 @@ int main(void)
     // Print control instructions
     printInstructions();
 
-    unsigned int sphereTextureId; // Declare the texture ID variable
     unsigned int sunTextureId; // Declare the texture ID variable
+    unsigned int mercuryTextureId; // Declare the texture ID variable
+	unsigned int venusTextureId; // Declare the texture ID variable
+    unsigned int earthTextureId; // Declare the texture ID variable
+	unsigned int marsTextureId; // Declare the texture ID variable
+	unsigned int jupiterTextureId; // Declare the texture ID variable
+	unsigned int saturnTextureId; // Declare the texture ID variable
+	unsigned int uranusTextureId; // Declare the texture ID variable
+	unsigned int neptuneTextureId; // Declare the texture ID variable
 
-    // Load the texture using Soil2
-    sphereTextureId = SOIL_load_OGL_texture(
-        "textures/earth.jpg",    // Path to the texture file
-        SOIL_LOAD_AUTO,          // Load format (automatic)
-        SOIL_CREATE_NEW_ID,      // Create new texture ID
-        SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS // Invert Y and repeat the texture
-    );
-
-    // Check if the earth texture was loaded successfully
-    if (sphereTextureId == 0) {
-        std::cerr << "Failed to load earth texture" << std::endl;
-    }
-
+    // Load the sun texture using Soil2
     sunTextureId = SOIL_load_OGL_texture(
 		"textures/sun.jpg",
 		SOIL_LOAD_AUTO,
@@ -381,6 +376,108 @@ int main(void)
 		std::cerr << "Failed to load sun texture" << std::endl;
 	}
 
+    mercuryTextureId = SOIL_load_OGL_texture(
+		"textures/mercury.jpg",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS
+	);
+
+	// Check if the mercury texture was loaded successfully
+	if (mercuryTextureId == 0) {
+		std::cerr << "Failed to load mercury texture" << std::endl;
+	}
+
+    // Load the venus texture using Soil2
+	venusTextureId = SOIL_load_OGL_texture(
+		"textures/venus.jpg",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS
+	);
+
+	// Check if the venus texture was loaded successfully
+	if (venusTextureId == 0) {
+		std::cerr << "Failed to load venus texture" << std::endl;
+	}
+
+    // Load the earth texture using Soil2
+    earthTextureId = SOIL_load_OGL_texture(
+        "textures/earth.jpg",    // Path to the texture file
+        SOIL_LOAD_AUTO,          // Load format (automatic)
+        SOIL_CREATE_NEW_ID,      // Create new texture ID
+        SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS // Invert Y and repeat the texture
+    );
+
+    // Check if the earth texture was loaded successfully
+    if (earthTextureId == 0) {
+        std::cerr << "Failed to load earth texture" << std::endl;
+    }
+
+    // Load the mars texture using Soil2
+	marsTextureId = SOIL_load_OGL_texture(
+		"textures/mars.jpg",    // Path to the texture file
+		SOIL_LOAD_AUTO,          // Load format (automatic)
+		SOIL_CREATE_NEW_ID,      // Create new texture ID
+		SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS // Invert Y and repeat the texture
+	);
+
+	// Check if the mars texture was loaded successfully
+	if (marsTextureId == 0) {
+		std::cerr << "Failed to load mars texture" << std::endl;
+	}
+
+	// Load the jupiter texture using Soil2
+	jupiterTextureId = SOIL_load_OGL_texture(
+		"textures/jupiter.jpg",    // Path to the texture file
+		SOIL_LOAD_AUTO,          // Load format (automatic)
+		SOIL_CREATE_NEW_ID,      // Create new texture ID
+		SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS // Invert Y and repeat the texture
+	);
+
+	// Check if the jupiter texture was loaded successfully
+	if (jupiterTextureId == 0) {
+		std::cerr << "Failed to load jupiter texture" << std::endl;
+	}
+
+	// Load the saturn texture using Soil2
+	saturnTextureId = SOIL_load_OGL_texture(
+		"textures/saturn.jpg",    // Path to the texture file
+		SOIL_LOAD_AUTO,          // Load format (automatic)
+		SOIL_CREATE_NEW_ID,      // Create new texture ID
+		SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS // Invert Y and repeat the texture
+	);
+
+	// Check if the saturn texture was loaded successfully
+	if (saturnTextureId == 0) {
+		std::cerr << "Failed to load saturn texture" << std::endl;
+	}
+
+	// Load the uranus texture using Soil2
+	uranusTextureId = SOIL_load_OGL_texture(
+		"textures/uranus.jpg",    // Path to the texture file
+		SOIL_LOAD_AUTO,          // Load format (automatic)
+		SOIL_CREATE_NEW_ID,      // Create new texture ID
+		SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS // Invert Y and repeat the texture
+	);
+
+	// Check if the uranus texture was loaded successfully
+	if (uranusTextureId == 0) {
+		std::cerr << "Failed to load uranus texture" << std::endl;
+	}
+
+	// Load the neptune texture using Soil2
+	neptuneTextureId = SOIL_load_OGL_texture(
+		"textures/neptune.jpg",    // Path to the texture file
+		SOIL_LOAD_AUTO,          // Load format (automatic)
+		SOIL_CREATE_NEW_ID,      // Create new texture ID
+		SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS // Invert Y and repeat the texture
+	);
+
+	// Check if the neptune texture was loaded successfully
+	if (neptuneTextureId == 0) {
+		std::cerr << "Failed to load neptune texture" << std::endl;
+	}
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -446,11 +543,56 @@ int main(void)
         glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f); // White light
         glUniform3f(objectColorLoc, 0.5f, 0.1f, 0.3f); // Same object color as before
 
-        // Render the Earth sphere
         glActiveTexture(GL_TEXTURE0); // Activate texture unit 0
-        glBindTexture(GL_TEXTURE_2D, sphereTextureId); // Bind the sphere texture
 
-        model = glm::translate(glm::mat4(1.0f), glm::vec3(0.75f, 0.5f, 0.0f)); // Right position
+        // Render the Sun sphere
+        model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));   // Sun at the center
+        model = glm::scale(model, glm::vec3(2.0f)); // Scale the Sun to make it larger
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+        glBindTexture(GL_TEXTURE_2D, sunTextureId); // Bind the Sun texture
+        glBindVertexArray(sphereVao);
+        glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
+
+        // Render the Mercury sphere
+        glActiveTexture(GL_TEXTURE0); // Activate texture unit 0
+        glBindTexture(GL_TEXTURE_2D, mercuryTextureId); // Bind the Mercury texture
+
+        // Position Mercury closer to the Sun (e.g., 2.0f units from the origin)
+        model = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f)); // Place Mercury
+        model = glm::scale(model, glm::vec3(0.2f)); // Scale Mercury to be smaller than Earth
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+        glUniform1i(glGetUniformLocation(shader, "textureSampler"), 0); // Assuming your shader uses "textureSampler"
+
+        glBindVertexArray(sphereVao); // Use the same VAO for sphere geometry
+        glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
+
+        glBindVertexArray(0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        // Render the Venus sphere
+        glActiveTexture(GL_TEXTURE0); // Activate texture unit 0
+        glBindTexture(GL_TEXTURE_2D, venusTextureId); // Bind the Venus texture
+
+        // Position Venus between Mercury and Earth (e.g., 4.0f units from the origin)
+        model = glm::translate(glm::mat4(1.0f), glm::vec3(4.0f, 0.0f, 0.0f)); // Place Venus
+        model = glm::scale(model, glm::vec3(0.45f)); // Scale Venus, smaller than Earth but larger than Mercury
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+        glUniform1i(glGetUniformLocation(shader, "textureSampler"), 0); // Assuming your shader uses "textureSampler"
+
+        glBindVertexArray(sphereVao); // Use the same VAO for sphere geometry
+        glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
+
+        glBindVertexArray(0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        // Render the Earth sphere
+        glBindTexture(GL_TEXTURE_2D, earthTextureId); // Bind the sphere texture
+
+        model = glm::translate(glm::mat4(1.0f), glm::vec3(6.0f, 0.0f, 0.0f)); // Right position
+		model = glm::scale(model, glm::vec3(0.5f));// Scale Earth
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
         glUniform1i(glGetUniformLocation(shader, "textureSampler"), 0); // Assuming your shader uses "textureSampler"
@@ -461,14 +603,80 @@ int main(void)
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
 
-        // Render the Sun sphere
-        model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));   // Sun at the center
-        model = glm::scale(model, glm::vec3(2.0f)); // Scale the Sun to make it larger
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        // Render the Mars sphere
+		glBindTexture(GL_TEXTURE_2D, marsTextureId); // Bind the sphere texture
 
-        glBindTexture(GL_TEXTURE_2D, sunTextureId); // Bind the Sun texture
-        glBindVertexArray(sphereVao);
-        glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(8.0f, 0.0f, 0.0f)); // Right position
+		model = glm::scale(model, glm::vec3(0.5f)); // Scale Mars
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+		glUniform1i(glGetUniformLocation(shader, "textureSampler"), 0); // Assuming your shader uses "textureSampler"
+
+		glBindVertexArray(sphereVao);
+		glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
+
+		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+        // Render the Jupiter sphere
+		glBindTexture(GL_TEXTURE_2D, jupiterTextureId); // Bind the sphere texture
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(10.0f, 0.0f, 0.0f)); // Right position
+		model = glm::scale(model, glm::vec3(1.5f)); // Scale Jupiter
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+		glUniform1i(glGetUniformLocation(shader, "textureSampler"), 0); // Assuming your shader uses "textureSampler"
+
+		glBindVertexArray(sphereVao);
+		glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
+
+		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		// Render the Saturn sphere
+		glBindTexture(GL_TEXTURE_2D, saturnTextureId); // Bind the sphere texture
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(12.0f, 0.0f, 0.0f)); // Right position
+		model = glm::scale(model, glm::vec3(1.0f)); // Scale Saturn
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+		glUniform1i(glGetUniformLocation(shader, "textureSampler"), 0); // Assuming your shader uses "textureSampler"
+
+		glBindVertexArray(sphereVao);
+		glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
+
+		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		// Render the Uranus sphere
+		glBindTexture(GL_TEXTURE_2D, uranusTextureId); // Bind the sphere texture
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(14.0f, 0.0f, 0.0f)); // Right position
+		model = glm::scale(model, glm::vec3(1.0f)); // Scale Uranus
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+		glUniform1i(glGetUniformLocation(shader, "textureSampler"), 0); // Assuming your shader uses "textureSampler"
+
+		glBindVertexArray(sphereVao);
+		glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
+
+		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		// Render the Neptune sphere
+		glBindTexture(GL_TEXTURE_2D, neptuneTextureId); // Bind the sphere texture
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(16.0f, 0.0f, 0.0f)); // Right position
+		model = glm::scale(model, glm::vec3(1.0f)); // Scale Neptune
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+		glUniform1i(glGetUniformLocation(shader, "textureSampler"), 0); // Assuming your shader uses "textureSampler"
+
+		glBindVertexArray(sphereVao);
+		glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
+
+		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
