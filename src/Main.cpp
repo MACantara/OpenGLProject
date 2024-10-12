@@ -358,12 +358,17 @@ void renderSpheres(GLuint shader, GLuint modelLoc, GLuint sphereVao, const std::
         glBindTexture(GL_TEXTURE_2D, textureIds[i]); // Bind the current texture
 
         // Calculate angle and position for orbiting planets
-        float angle = angularVelocities[i] * currentTime; // Calculate angle based on time
-        float x = orbitalRadii[i] * cos(angle); // X position based on angle
-        float z = orbitalRadii[i] * sin(angle); // Z position based on angle
+        float orbitAngle = angularVelocities[i] * currentTime; // Angle for orbit
+        float x = orbitalRadii[i] * cos(orbitAngle); // X position based on angle
+        float z = orbitalRadii[i] * sin(orbitAngle); // Z position based on angle
+
+        // Calculate rotation angle based on time (optional: you can define rotation speeds per planet)
+        float rotationSpeed = 1.0f; // Adjust this value for faster/slower rotation
+        float rotationAngle = rotationSpeed * currentTime; // Angle for rotation
 
         // Create the model matrix for the current planet
         glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x, 0.0f, z)); // Position based on orbit
+        model = glm::rotate(model, glm::radians(rotationAngle), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotate the planet around its axis
         model = glm::scale(model, glm::vec3(scales[i])); // Scale the planet
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model)); // Send the model matrix to the shader
 
