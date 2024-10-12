@@ -447,25 +447,21 @@ int main(void)
         glUniform3f(objectColorLoc, 0.5f, 0.1f, 0.3f); // Same object color as before
 
         // Render the Earth sphere
-        // Bind the texture
         glActiveTexture(GL_TEXTURE0); // Activate texture unit 0
         glBindTexture(GL_TEXTURE_2D, sphereTextureId); // Bind the sphere texture
 
-        // Render the sphere
         model = glm::translate(glm::mat4(1.0f), glm::vec3(0.75f, 0.5f, 0.0f)); // Right position
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-        // Pass the texture sampler uniform to the shader
         glUniform1i(glGetUniformLocation(shader, "textureSampler"), 0); // Assuming your shader uses "textureSampler"
 
         glBindVertexArray(sphereVao);
         glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
 
-        // Unbind the VAO and texture (optional, for good practice)
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
 
-        // Render the Sun
+        // Render the Sun sphere
         model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));   // Sun at the center
         model = glm::scale(model, glm::vec3(2.0f)); // Scale the Sun to make it larger
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
