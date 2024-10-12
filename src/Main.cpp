@@ -546,6 +546,13 @@ int main(void)
 
         ImGui::End();
 
+        ImGui::Begin("Camera Control"); // Create a new ImGui window
+
+        ImGui::SetNextWindowSize(ImVec2(300, 50)); // Text instruction window size
+        ImGui::SliderFloat("Camera Speed", &cameraSpeed, 0.1f, 5.0f, "Speed: %.1f"); // Add a slider for camera speed
+
+        ImGui::End(); // End the ImGui window
+
         // Rendering ImGui
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
