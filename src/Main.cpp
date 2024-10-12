@@ -12,7 +12,7 @@
 #include <vector>
 
 const int WINDOW_WIDTH = 640, WINDOW_HEIGHT = 480;
-const std::string WINDOW_TITLE = "Lighting of Cube and Sphere";
+const std::string WINDOW_TITLE = "Earth Sphere with Phong Shading and Point Light Source";
 
 const float M_PI = 3.14159265358979323846f;
 const float M_PI_2 = M_PI / 2.0f;
