@@ -715,6 +715,7 @@ int main(void)
         // Set the position of the ImGui Instructions window
         ImGui::SetWindowPos(ImVec2(width - TEXT_INSTRUCTION_WIDTH - TEXT_INSTRUCTION_LEFT_MARGIN, TEXT_INSTRUCTION_POS_Y), ImGuiCond_Always);
 
+        ImGui::Text("Use the mouse to look around.");
         ImGui::Text("Use WASD to move around.");
         ImGui::Text("Press ESC to exit.");
 		ImGui::Text("Press R to reset camera position.");
