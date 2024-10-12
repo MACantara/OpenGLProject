@@ -507,13 +507,15 @@ int main(void)
         ImGui::NewFrame();
 
         // Your ImGui code (e.g., windows, controls, text, etc.)
+        ImGui::SetNextWindowSize(ImVec2(200, 85)); // Text instruction window size
+        ImGui::SetNextWindowPos(ImVec2(WINDOW_WIDTH - 210, 10)); // Position at top right
+
+        // Instructions
         ImGui::Begin("Instructions");
-        ImGui::Text("W - Move forward");
-        ImGui::Text("S - Move backward");
-        ImGui::Text("A - Move left");
-        ImGui::Text("D - Move right");
-        ImGui::Text("R - Reset camera position");
-        ImGui::Text("ESC - Close the window");
+        ImGui::Text("Use WASD to move around.");
+        ImGui::Text("Press ESC to exit.");
+		ImGui::Text("Press R to reset camera position.");
+
         ImGui::End();
 
         // Rendering ImGui
