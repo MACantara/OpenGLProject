@@ -4,6 +4,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <SOIL2/SOIL2.h>
+#include "imgui.h"
+#include "backends/imgui_impl_glfw.h"   // ImGui GLFW backend
+#include "backends/imgui_impl_opengl3.h"   // ImGui OpenGL3 backend
 
 #include <iostream>
 #include <fstream>
@@ -343,6 +346,7 @@ int main(void)
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
+    glfwSwapInterval(1);
 
     if (glewInit() != GLEW_OK)
         std::cout << "Failed to initialize GLEW" << std::endl;
@@ -431,6 +435,18 @@ int main(void)
 
     loadTextures();
 
+    // Setup ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+
+    // Initialize ImGui for GLFW and OpenGL3
+    ImGui_ImplGlfw_InitForOpenGL(window, true);  // Your GLFW window
+    ImGui_ImplOpenGL3_Init("#version 130");  // GLSL version (adjust as needed)
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -499,10 +515,27 @@ int main(void)
 
         renderSpheres(shader, modelLoc, sphereVao, sphereIndices);
 
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
+        // Start the ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
 
-        /* Poll for and process events */
+        // Your ImGui code (e.g., windows, controls, text, etc.)
+        ImGui::Begin("Instructions");
+        ImGui::Text("W - Move forward");
+        ImGui::Text("S - Move backward");
+        ImGui::Text("A - Move left");
+        ImGui::Text("D - Move right");
+        ImGui::Text("R - Reset camera position");
+        ImGui::Text("ESC - Close the window");
+        ImGui::End();
+
+        // Rendering ImGui
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        // Swap buffers and poll IO
+        glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
@@ -510,6 +543,9 @@ int main(void)
     glDeleteVertexArrays(1, &sphereVao);
     glDeleteBuffers(1, &sphereVbo);
     glDeleteBuffers(1, &sphereIbo);
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     glfwTerminate();
     return 0;
