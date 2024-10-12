@@ -19,8 +19,16 @@
 const int WINDOW_WIDTH = 640, WINDOW_HEIGHT = 480;
 const std::string WINDOW_TITLE = "Lighting of Cube and Sphere";
 
+// Define the mathematical constants
 const float M_PI = 3.14159265358979323846f;
 const float M_PI_2 = M_PI / 2.0f;
+
+// Define the text instruction parameters
+const int TEXT_INSTRUCTION_WIDTH = 250;
+const int TEXT_INSTRUCTION_HEIGHT = 100;
+const int TEXT_INSTRUCTION_LEFT_MARGIN = 10;
+const int TEXT_INSTRUCTION_POS_X = (WINDOW_WIDTH - TEXT_INSTRUCTION_WIDTH) - TEXT_INSTRUCTION_LEFT_MARGIN;
+const int TEXT_INSTRUCTION_POS_Y = 10;
 
 // Define the camera parameters
 glm::vec3 initialCameraPos = glm::vec3(0.75f, 1.0f, 3.0f);  // Adjusted camera position (closer and above the sphere)
@@ -526,8 +534,8 @@ int main(void)
         ImGui::NewFrame();
 
         // Your ImGui code (e.g., windows, controls, text, etc.)
-        ImGui::SetNextWindowSize(ImVec2(250, 100)); // Text instruction window size
-        ImGui::SetNextWindowPos(ImVec2(WINDOW_WIDTH - 260, 10)); // Position at top right
+        ImGui::SetNextWindowSize(ImVec2(TEXT_INSTRUCTION_WIDTH, TEXT_INSTRUCTION_HEIGHT)); // Text instruction window size
+        ImGui::SetNextWindowPos(ImVec2(TEXT_INSTRUCTION_POS_X, TEXT_INSTRUCTION_POS_Y)); // Position at top right
 
         // Instructions
         ImGui::Begin("Instructions");
