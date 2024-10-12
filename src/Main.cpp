@@ -39,6 +39,46 @@ bool firstMouse = true;  // Flag to ignore the first mouse movement
 
 float sensitivity = 0.1f;  // Sensitivity for the mouse movement
 
+// Define an array to hold texture IDs
+std::array<unsigned int, 9> textureIds;
+
+// Define the paths and scale factors for the textures
+const std::array<std::string, 9> texturePaths = {
+    "textures/sun.jpg",
+    "textures/mercury.jpg",
+    "textures/venus.jpg",
+    "textures/earth.jpg",
+    "textures/mars.jpg",
+    "textures/jupiter.jpg",
+    "textures/saturn.jpg",
+    "textures/uranus.jpg",
+    "textures/neptune.jpg"
+};
+
+const std::array<float, 9> scales = {
+    2.0f, // Sun
+    0.2f, // Mercury
+    0.45f, // Venus
+    0.5f, // Earth
+    0.5f, // Mars
+    1.5f, // Jupiter
+    1.0f, // Saturn
+    1.0f, // Uranus
+    1.0f  // Neptune
+};
+
+const std::array<float, 9> positions = {
+    0.0f,  // Sun
+    2.0f,  // Mercury
+    4.0f,  // Venus
+    6.0f,  // Earth
+    8.0f,  // Mars
+    10.0f, // Jupiter
+    12.0f, // Saturn
+    14.0f, // Uranus
+    16.0f  // Neptune
+};
+
 // Load texture function
 GLuint loadTexture(const char* filePath) {
     GLuint textureID;
@@ -241,46 +281,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     front.z = sin(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
     cameraFront = glm::normalize(front);
 }
-
-// Define an array to hold texture IDs
-std::array<unsigned int, 9> textureIds;
-
-// Define the paths and scale factors for the textures
-const std::array<std::string, 9> texturePaths = {
-    "textures/sun.jpg",
-    "textures/mercury.jpg",
-    "textures/venus.jpg",
-    "textures/earth.jpg",
-    "textures/mars.jpg",
-    "textures/jupiter.jpg",
-    "textures/saturn.jpg",
-    "textures/uranus.jpg",
-    "textures/neptune.jpg"
-};
-
-const std::array<float, 9> scales = {
-    2.0f, // Sun
-    0.2f, // Mercury
-    0.45f, // Venus
-    0.5f, // Earth
-    0.5f, // Mars
-    1.5f, // Jupiter
-    1.0f, // Saturn
-    1.0f, // Uranus
-    1.0f  // Neptune
-};
-
-const std::array<float, 9> positions = {
-    0.0f,  // Sun
-    2.0f,  // Mercury
-    4.0f,  // Venus
-    6.0f,  // Earth
-    8.0f,  // Mars
-    10.0f, // Jupiter
-    12.0f, // Saturn
-    14.0f, // Uranus
-    16.0f  // Neptune
-};
 
 // Function to load textures
 void loadTextures() {
