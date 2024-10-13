@@ -25,26 +25,34 @@ const std::string WINDOW_TITLE = "Lighting of Cube and Sphere";
 const float M_PI = 3.14159265358979323846f;
 const float M_PI_2 = M_PI / 2.0f;
 
-// Define the text instruction parameters
+// Define the text instruction position
 const int TEXT_INSTRUCTION_WIDTH = 250;
 const int TEXT_INSTRUCTION_HEIGHT = 100;
 const int TEXT_INSTRUCTION_LEFT_MARGIN = 10;
 const int TEXT_INSTRUCTION_POS_X = (WINDOW_WIDTH - TEXT_INSTRUCTION_WIDTH) - TEXT_INSTRUCTION_LEFT_MARGIN;
 const int TEXT_INSTRUCTION_POS_Y = 10;
 
-// Define the camera parameters
-glm::vec3 initialCameraPos = glm::vec3(0.0f, 20.0f, 20.0f);  // Positioned above and away from the center
-float initialYaw = -90.0f;  // Yaw adjusted to look diagonally across the solar system
-float initialPitch = -45.0f;  // Pitch set to -45 degrees for a top-down view
-glm::vec3 initialCameraFront = glm::normalize(glm::vec3(0.0f, -1.0f, -1.0f));  // Adjusted front direction for top-down view
+// Define the camera position window parameters
+const float CAMERA_PARAMETERS_MARGIN_TOP = 20.0f;
+const float CAMERA_PARAMETERS_MARGIN_RIGHT = 95.0f;
 
-glm::vec3 cameraPos = glm::vec3(0.0f, 20.0f, 20.0f);  // Positioned above and away from the center
-glm::vec3 cameraFront = glm::normalize(glm::vec3(0.0f, -1.0f, -1.0f));  // Adjusted front direction for top-down view
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);  // Up vector remains unchanged
-float cameraSpeed = 0.1f;  // Adjust this speed as needed
+// Define the initial camera position
+glm::vec3 initialCameraPos = glm::vec3(-27.55f, 11.88f, 5.53f);
+float initialYaw = -5.10f;
+float initialPitch = -25.50f;
+glm::vec3 initialCameraFront = glm::normalize(glm::vec3(0.90f, -0.43f, -0.08f));
 
-float cameraYaw = -90.0f;
-float cameraPitch = -45.0f;
+// Define the current camera position
+glm::vec3 cameraPos = glm::vec3(-27.55f, 11.88f, 5.53f);
+float cameraYaw = -5.10f;
+float cameraPitch = -25.50f;
+glm::vec3 cameraFront = glm::normalize(glm::vec3(0.90f, -0.43f, -0.08f));
+
+// Define the camera up vector and speed
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+float cameraSpeed = 0.1f; 
+
+// Define the mouse sensitivity
 float lastX = WINDOW_WIDTH / 2.0f;  // Last x-coordinate of the mouse
 float lastY = WINDOW_HEIGHT / 2.0f; // Last y-coordinate of the mouse
 bool firstMouse = true;  // Flag to ignore the first mouse movement
@@ -69,6 +77,7 @@ const std::array<std::string, 9> texturePaths = {
     "textures/neptune.jpg"
 };
 
+// Define the scales for each planet
 const std::array<float, 9> scales = {
     2.0f, // Sun
     0.2f, // Mercury
@@ -81,6 +90,7 @@ const std::array<float, 9> scales = {
     1.0f  // Neptune
 };
 
+// Define the positions for each planet
 const std::array<float, 9> positions = {
     0.0f,  // Sun
     2.0f,  // Mercury
@@ -101,9 +111,9 @@ const std::array<float, 9> orbitalRadii = {
     6.0f,  // Earth
     8.0f,  // Mars
     14.0f, // Jupiter (adjusted to be beyond the asteroid belt)
-    16.0f, // Saturn (adjusted accordingly)
-    18.0f, // Uranus (adjusted accordingly)
-    20.0f  // Neptune (adjusted accordingly)
+    16.0f, // Saturn
+    18.0f, // Uranus
+    20.0f  // Neptune
 };
 
 // Orbital speeds for each planet (in radians per second)
@@ -176,12 +186,14 @@ GLuint loadTexture(const char* filePath) {
     return textureID;
 }
 
+// Function to handle window resizing
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     // Adjust the viewport based on the new window dimensions
     glViewport(0, 0, width, height);
 }
 
+// Function to parse shader files
 struct ShaderProgramSource
 {
     std::string VertexSource;
@@ -222,6 +234,7 @@ static ShaderProgramSource ParseShader(const std::string& filepath)
     return { ss[0].str(), ss[1].str() };
 }
 
+// Function to compile shaders
 static unsigned int CompileShader(unsigned int type, const std::string& source)
 {
     unsigned int id = glCreateShader(type);
@@ -246,6 +259,7 @@ static unsigned int CompileShader(unsigned int type, const std::string& source)
     return id;
 }
 
+// Function to create a shader program
 static unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
 {
     unsigned int program = glCreateProgram();
@@ -314,6 +328,7 @@ void generateSphere(float radius, unsigned int rings, unsigned int sectors, std:
     }
 }
 
+// Function to handle mouse movement
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
     if (!cameraMovementEnabled) return; // Do not update if movement is disabled
 
@@ -346,6 +361,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
     cameraFront = glm::normalize(front);
 }
 
+// Function to handle key presses
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
         cameraMovementEnabled = !cameraMovementEnabled; // Toggle camera movement
@@ -407,6 +423,7 @@ void renderSpheres(GLuint shader, GLuint modelLoc, GLuint sphereVao, const std::
     }
 };
 
+// Function to draw orbit lines
 void drawOrbit(float radius, int segments) {
     glBegin(GL_LINE_STRIP);
     for (int i = 0; i <= segments; i++) {
@@ -550,6 +567,7 @@ int main(void)
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (void*)(sizeof(float) * 3)); // Normal
     glEnableVertexAttribArray(1);
 
+	// Load shaders
     ShaderProgramSource source = ParseShader("res/shaders/Basic.shader");
     std::cout << "VERTEX SHADERS" << std::endl;
     std::cout << source.VertexSource << std::endl;
@@ -616,7 +634,7 @@ int main(void)
             cameraFront = initialCameraFront;
         }
 
-        // Process input
+        // Keyboard input for camera movement
         float deltaTime = 0.1f;  // Can adjust or calculate based on actual time elapsed
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
             cameraPos += cameraSpeed * deltaTime * cameraFront;
@@ -656,7 +674,7 @@ int main(void)
         glActiveTexture(GL_TEXTURE0); // Activate texture unit 0
 
         glEnable(GL_LINE_SMOOTH);
-        glLineWidth(1.0f); // Set line width if needed
+        glLineWidth(1.0f);
 
         // Enable blending
         glEnable(GL_BLEND);
@@ -685,7 +703,6 @@ int main(void)
         // Rendering the planets
         glUniform1i(glGetUniformLocation(shader, "isSun"), false);
 
-
         // Draw orbits for each planet
         for (int i = 1; i < positions.size(); i++) {  // Start from 1 to skip the Sun
             glColor3f(1.0f, 1.0f, 1.0f); // Set orbit color (white)
@@ -713,7 +730,6 @@ int main(void)
 
         // Text Instructions Window
         ImGui::Begin("Instructions", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
-        // Set the position of the ImGui Instructions window
         ImGui::SetWindowPos(ImVec2(width - TEXT_INSTRUCTION_WIDTH - TEXT_INSTRUCTION_LEFT_MARGIN, TEXT_INSTRUCTION_POS_Y), ImGuiCond_Always);
 
         ImGui::Text("Use the mouse to look around.");
@@ -724,22 +740,25 @@ int main(void)
 
         ImGui::End();
 
-		// Camera control
-        ImGui::Begin("Camera Control", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
-        ImGui::SliderFloat("Camera Speed", &cameraSpeed, 0.1f, 5.0f, "Speed: %.1f"); // Add a slider for camera speed
-        ImGui::End(); // End the ImGui window
+        // Display camera position
+        ImGui::Begin("Camera Positions", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+        ImGui::SetWindowPos(ImVec2(width - TEXT_INSTRUCTION_WIDTH - CAMERA_PARAMETERS_MARGIN_RIGHT, TEXT_INSTRUCTION_POS_Y + ImGui::GetWindowHeight() + CAMERA_PARAMETERS_MARGIN_TOP), ImGuiCond_Always);
 
-        // Mouse sensitivity control
-        ImGui::Begin("Mouse Sensitivity", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
-        ImGui::SliderFloat("Mouse Sensitivity", &mouseSensitivity, 0.1f, 5.0f, "Speed: %.1f");
-        ImGui::End();
-
-        // Display camera parameters
-        ImGui::Begin("Camera Parameters", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
         ImGui::Text("Initial Camera Position: (%.2f, %.2f, %.2f)", cameraPos.x, cameraPos.y, cameraPos.z);
         ImGui::Text("Initial Yaw: %.2f", cameraYaw);
         ImGui::Text("Initial Pitch: %.2f", cameraPitch);
         ImGui::Text("Initial Camera Front: (%.2f, %.2f, %.2f)", cameraFront.x, cameraFront.y, cameraFront.z);
+
+        ImGui::End();
+
+		// Camera control
+        ImGui::Begin("Camera Control", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+        ImGui::SliderFloat("Camera Speed", &cameraSpeed, 0.1f, 5.0f, "Speed: %.1f");
+        ImGui::End();
+
+        // Mouse sensitivity control
+        ImGui::Begin("Mouse Sensitivity", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+        ImGui::SliderFloat("Mouse Sensitivity", &mouseSensitivity, 0.1f, 5.0f, "Speed: %.1f");
         ImGui::End();
 
         // Rendering ImGui
