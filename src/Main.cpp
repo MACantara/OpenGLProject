@@ -171,6 +171,7 @@ const float RING_ASTEROID_MIN_RADIUS = 0.001f; // Minimum radius of the asteroid
 const float RING_ASTEROID_MAX_RADIUS = 0.010f; // Maximum radius of the asteroids
 const float RING_ASTEROID_MIN_ORBIT_SPEED = 0.001f; // Minimum orbit speed of the asteroids
 const float RING_ASTEROID_MAX_ORBIT_SPEED = 0.01f; // Maximum orbit speed of the asteroids
+const float SATURN_TILT_ANGLE = glm::radians(26.7f); // Saturn's axial tilt in radians
 
 // Load texture function
 GLuint loadTexture(const char* filePath) {
@@ -541,6 +542,20 @@ void renderAsteroids(GLuint shader, GLuint modelLoc, GLuint sphereVao, const std
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+// Function to rotate a point around the X-axis
+glm::vec3 rotateAroundXAxis(const glm::vec3& point, float angle) {
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(1.0f, 0.0f, 0.0f));
+    glm::vec4 rotatedPoint = rotationMatrix * glm::vec4(point, 1.0f);
+    return glm::vec3(rotatedPoint);
+}
+
+// Function to rotate a point around the Y-axis
+glm::vec3 rotateAroundYAxis(const glm::vec3& point, float angle) {
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::vec4 rotatedPoint = rotationMatrix * glm::vec4(point, 1.0f);
+    return glm::vec3(rotatedPoint);
+}
+
 // Function to generate asteroid positions and speeds for Saturn's ring
 void generateRingAsteroids(std::vector<glm::vec3>& positions, std::vector<float>& sizes, std::vector<float>& orbitSpeeds) {
     srand(static_cast<unsigned int>(time(0))); // Seed for random number generation
@@ -552,9 +567,20 @@ void generateRingAsteroids(std::vector<glm::vec3>& positions, std::vector<float>
         float z = distance * sin(angle);
         float y = randomFloat(-0.01f, 0.01f); // Small vertical variation for thickness
 
-        positions.push_back(glm::vec3(x, y, z));
+        glm::vec3 position = glm::vec3(x, y, z);
+        position = rotateAroundXAxis(position, SATURN_TILT_ANGLE); // Apply tilt
+
+        positions.push_back(position);
         sizes.push_back(randomFloat(RING_ASTEROID_MIN_RADIUS, RING_ASTEROID_MAX_RADIUS));
         orbitSpeeds.push_back(randomFloat(RING_ASTEROID_MIN_ORBIT_SPEED, RING_ASTEROID_MAX_ORBIT_SPEED));
+    }
+}
+
+// Update asteroid positions to simulate orbiting
+void updateAsteroidPositions(std::vector<glm::vec3>& positions, const std::vector<float>& orbitSpeeds, float deltaTime) {
+    for (size_t i = 0; i < positions.size(); ++i) {
+        float angle = orbitSpeeds[i] * deltaTime; // Calculate rotation angle based on individual speed and time
+        positions[i] = rotateAroundYAxis(positions[i], angle);
     }
 }
 
@@ -574,21 +600,6 @@ void renderSaturnRingAsteroids(GLuint shader, GLuint modelLoc, GLuint sphereVao,
 
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-// Function to rotate a point around the Y-axis
-glm::vec3 rotateAroundYAxis(const glm::vec3& point, float angle) {
-    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 1.0f, 0.0f));
-    glm::vec4 rotatedPoint = rotationMatrix * glm::vec4(point, 1.0f);
-    return glm::vec3(rotatedPoint);
-}
-
-// Update asteroid positions to simulate orbiting
-void updateAsteroidPositions(std::vector<glm::vec3>& positions, const std::vector<float>& orbitSpeeds, float deltaTime) {
-    for (size_t i = 0; i < positions.size(); ++i) {
-        float angle = orbitSpeeds[i] * deltaTime; // Calculate rotation angle based on individual speed and time
-        positions[i] = rotateAroundYAxis(positions[i], angle);
-    }
 }
 
 int main(void)
