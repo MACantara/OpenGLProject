@@ -774,16 +774,6 @@ int main(void)
         float saturnX = orbitalRadii[6] * cos(saturnAngle);
         float saturnZ = orbitalRadii[6] * sin(saturnAngle);
 
-		// Load the texture for Saturn's rings
-        GLuint saturnRingTexture = loadTexture("textures/saturn_ring.png");
-        if (saturnRingTexture == 0) {
-            std::cerr << "Failed to load Saturn's ring texture." << std::endl;
-        }
-
-        glActiveTexture(GL_TEXTURE0); // Activate the texture unit
-        glBindTexture(GL_TEXTURE_2D, saturnRingTexture); // Bind the texture
-        glUniform1i(glGetUniformLocation(shader, "textureSampler"), 0); // Set the sampler to use texture unit 0
-
         // Update asteroid positions
         updateAsteroids(asteroidPositions, asteroidRotationSpeeds);
 
