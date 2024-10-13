@@ -18,7 +18,7 @@
 #include <ctime>   // For time()
 
 // Define the window dimensions
-const int WINDOW_WIDTH = 640, WINDOW_HEIGHT = 480;
+const int WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
 const std::string WINDOW_TITLE = "Lighting of Cube and Sphere";
 
 // Define the mathematical constants
