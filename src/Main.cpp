@@ -32,10 +32,6 @@ const int TEXT_INSTRUCTION_LEFT_MARGIN = 10;
 const int TEXT_INSTRUCTION_POS_X = (WINDOW_WIDTH - TEXT_INSTRUCTION_WIDTH) - TEXT_INSTRUCTION_LEFT_MARGIN;
 const int TEXT_INSTRUCTION_POS_Y = 10;
 
-// Define the orbit and rotation speed slider parameters
-const int SLIDER_POS_X = 10;
-const int SLIDER_POS_Y = 200;
-
 // Define the camera parameters
 glm::vec3 initialCameraPos = glm::vec3(0.0f, 20.0f, 20.0f);  // Positioned above and away from the center
 float initialYaw = -90.0f;  // Yaw adjusted to look diagonally across the solar system
@@ -111,7 +107,7 @@ const std::array<float, 9> orbitalRadii = {
 };
 
 // Orbital speeds for each planet (in radians per second)
-const std::array<float, 9> originalAngularVelocities = {
+const std::array<float, 9> angularVelocities = {
     0.0f,    // Sun
     0.033f,  // Mercury
     0.023f,  // Venus
@@ -124,7 +120,7 @@ const std::array<float, 9> originalAngularVelocities = {
 };
 
 // Rotation speeds for each planet (in radians per second)
-const std::array<float, 9> originalRotationSpeeds = {
+const std::array<float, 9> rotationSpeeds = {
     0.0f,    // Sun
     0.25f,   // Mercury
     0.125f,  // Venus
@@ -135,21 +131,6 @@ const std::array<float, 9> originalRotationSpeeds = {
     0.025f,  // Uranus
     0.0225f  // Neptune
 };
-
-// Variables to hold current speeds
-std::array<float, 9> angularVelocities;
-std::array<float, 9> rotationSpeeds;
-
-// Scale factor (default to 1.0)
-float scaleFactor = 1.0f;
-
-// Function to update speeds based on scale factor
-void UpdateSpeeds() {
-    for (size_t i = 0; i < 9; ++i) {
-        angularVelocities[i] = originalAngularVelocities[i] * scaleFactor;
-        rotationSpeeds[i] = originalRotationSpeeds[i] * scaleFactor;
-    }
-}
 
 // Global time variable
 float deltaTime = 0.0f; // Time between frames
@@ -751,57 +732,6 @@ int main(void)
         // Mouse sensitivity control
         ImGui::Begin("Mouse Sensitivity", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
         ImGui::SliderFloat("Mouse Sensitivity", &mouseSensitivity, 0.1f, 5.0f, "Speed: %.1f");
-        ImGui::End();
-
-        ImGui::Begin("Planet Orbit and Rotation Speed Control", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
-
-        // Set the position of the ImGui sliders window to the bottom left
-        ImGui::SetWindowPos(ImVec2(SLIDER_POS_X, height - SLIDER_POS_Y), ImGuiCond_Always); 
-
-        // Define the multiplier buttons
-        if (ImGui::Button("1x")) {
-            scaleFactor = 1.0f;
-            UpdateSpeeds();
-        }
-        ImGui::SameLine(); // Keep buttons in the same line
-        if (ImGui::Button("2x")) {
-            scaleFactor = 2.0f;
-            UpdateSpeeds();
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("3x")) {
-            scaleFactor = 3.0f;
-            UpdateSpeeds();
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("5x")) {
-            scaleFactor = 5.0f;
-            UpdateSpeeds();
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("10x")) {
-            scaleFactor = 10.0f;
-            UpdateSpeeds();
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("15x")) {
-            scaleFactor = 15.0f;
-            UpdateSpeeds();
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("20x")) {
-            scaleFactor = 20.0f;
-            UpdateSpeeds();
-        }
-
-        // Display current speeds
-        for (size_t i = 1; i < 9; ++i) { // Start from 1 to skip the Sun
-            ImGui::Text("Planet %zu: Orbital Speed: %.3f, Rotation Speed: %.3f",
-                i,
-                angularVelocities[i],
-                rotationSpeeds[i]);
-        }
-
         ImGui::End();
 
         // Rendering ImGui
