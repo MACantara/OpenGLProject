@@ -62,10 +62,10 @@ bool cameraMovementEnabled = true; // Camera movement toggle
 float mouseSensitivity = 0.1f;
 
 // Define an array to hold texture IDs
-std::array<unsigned int, 9> textureIds;
+std::array<unsigned int, 11> textureIds;
 
 // Define the paths and scale factors for the textures
-const std::array<std::string, 9> texturePaths = {
+const std::array<std::string, 11> texturePaths = {
     "textures/sun.jpg",
     "textures/mercury.jpg",
     "textures/venus.jpg",
@@ -74,7 +74,9 @@ const std::array<std::string, 9> texturePaths = {
     "textures/jupiter.jpg",
     "textures/saturn.jpg",
     "textures/uranus.jpg",
-    "textures/neptune.jpg"
+    "textures/neptune.jpg",
+    "textures/asteroid.jpg",
+    "textures/moon.jpg"
 };
 
 // Define the scales for each planet
@@ -149,11 +151,16 @@ float lastFrame = 0.0f; // Time of the last frame
 // Define constants for the asteroid belt
 const int NUM_ASTEROIDS = 10000;
 const float ASTEROID_MIN_RADIUS = 0.001f;
-const float ASTEROID_MAX_RADIUS = 0.030f;
+const float ASTEROID_MAX_RADIUS = 0.030f; 
 const float BELT_INNER_RADIUS = 10.0f; // Between Mars (8.0f) and Jupiter (14.0f)
 const float BELT_OUTER_RADIUS = 12.0f;
 const float MIN_ROTATION_SPEED = 0.0001f;
 const float MAX_ROTATION_SPEED = 0.001f;
+
+// Moon parameters
+const float moonScale = 0.1f;
+const float moonOrbitRadius = 0.75f; // Distance from Earth
+const float moonOrbitSpeed = 0.05f; // Speed of orbit around Earth
 
 // Load texture function
 GLuint loadTexture(const char* filePath) {
@@ -395,7 +402,7 @@ void loadTextures() {
 void renderSpheres(GLuint shader, GLuint modelLoc, GLuint sphereVao, const std::vector<unsigned int>& sphereIndices) {
     float currentTime = glfwGetTime();
 
-    for (size_t i = 0; i < textureIds.size(); ++i) {
+    for (size_t i = 0; i < textureIds.size() - 1; ++i) { // Exclude moon for now
         glBindTexture(GL_TEXTURE_2D, textureIds[i]); // Bind the current texture
 
         // Calculate angle and position for orbiting planets
@@ -421,6 +428,31 @@ void renderSpheres(GLuint shader, GLuint modelLoc, GLuint sphereVao, const std::
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0); // Unbind the texture
     }
+
+    // Render the moon orbiting Earth
+    glBindTexture(GL_TEXTURE_2D, textureIds[9]); // Bind the moon texture
+
+    // Calculate Earth's position
+    float earthAngle = angularVelocities[3] * currentTime;
+    float earthX = orbitalRadii[3] * cos(earthAngle);
+    float earthZ = orbitalRadii[3] * sin(earthAngle);
+
+    // Calculate Moon's position relative to Earth
+    float moonAngle = moonOrbitSpeed * currentTime;
+    float moonX = earthX + moonOrbitRadius * cos(moonAngle);
+    float moonZ = earthZ + moonOrbitRadius * sin(moonAngle);
+
+    // Create the model matrix for the moon
+    glm::mat4 moonModel = glm::translate(glm::mat4(1.0f), glm::vec3(moonX, 0.0f, moonZ));
+    moonModel = glm::scale(moonModel, glm::vec3(moonScale));
+
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(moonModel)); // Send the model matrix to the shader
+
+    glBindVertexArray(sphereVao);
+    glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 };
 
 // Function to draw orbit lines

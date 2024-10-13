@@ -188,6 +188,21 @@
     <ClInclude Include="src\imstb_textedit.h" />
     <ClInclude Include="src\imstb_truetype.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\asteroid.jpg" />
+    <Image Include="textures\earth.jpg" />
+    <Image Include="textures\jupiter.jpg" />
+    <Image Include="textures\mars.jpg" />
+    <Image Include="textures\mercury.jpg" />
+    <Image Include="textures\milky-way-galaxy.jpg" />
+    <Image Include="textures\moon.jpg" />
+    <Image Include="textures\neptune.jpg" />
+    <Image Include="textures\saturn.jpg" />
+    <Image Include="textures\saturn_ring.png" />
+    <Image Include="textures\sun.jpg" />
+    <Image Include="textures\uranus.jpg" />
+    <Image Include="textures\venus.jpg" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
