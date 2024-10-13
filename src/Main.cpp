@@ -169,6 +169,8 @@ const float RING_INNER_RADIUS = 0.75f; // Inner radius of the ring
 const float RING_OUTER_RADIUS = 1.0f; // Outer radius of the ring
 const float RING_ASTEROID_MIN_RADIUS = 0.001f; // Minimum radius of the asteroids
 const float RING_ASTEROID_MAX_RADIUS = 0.010f; // Maximum radius of the asteroids
+const float RING_ASTEROID_MIN_ORBIT_SPEED = 0.001f; // Minimum orbit speed of the asteroids
+const float RING_ASTEROID_MAX_ORBIT_SPEED = 0.01f; // Maximum orbit speed of the asteroids
 
 // Load texture function
 GLuint loadTexture(const char* filePath) {
@@ -539,8 +541,8 @@ void renderAsteroids(GLuint shader, GLuint modelLoc, GLuint sphereVao, const std
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-// Function to generate asteroid positions for Saturn's ring
-void generateRingAsteroids(std::vector<glm::vec3>& positions, std::vector<float>& sizes) {
+// Function to generate asteroid positions and speeds for Saturn's ring
+void generateRingAsteroids(std::vector<glm::vec3>& positions, std::vector<float>& sizes, std::vector<float>& orbitSpeeds) {
     srand(static_cast<unsigned int>(time(0))); // Seed for random number generation
 
     for (int i = 0; i < NUM_RING_ASTEROIDS; ++i) {
@@ -552,11 +554,12 @@ void generateRingAsteroids(std::vector<glm::vec3>& positions, std::vector<float>
 
         positions.push_back(glm::vec3(x, y, z));
         sizes.push_back(randomFloat(RING_ASTEROID_MIN_RADIUS, RING_ASTEROID_MAX_RADIUS));
+        orbitSpeeds.push_back(randomFloat(RING_ASTEROID_MIN_ORBIT_SPEED, RING_ASTEROID_MAX_ORBIT_SPEED));
     }
 }
 
 // Function to render Saturn's ring asteroids
-void renderRingAsteroids(GLuint shader, GLuint modelLoc, GLuint sphereVao, const std::vector<unsigned int>& sphereIndices, GLuint asteroidTexture, const std::vector<glm::vec3>& positions, const std::vector<float>& sizes, float saturnX, float saturnZ) {
+void renderSaturnRingAsteroids(GLuint shader, GLuint modelLoc, GLuint sphereVao, const std::vector<unsigned int>& sphereIndices, GLuint asteroidTexture, const std::vector<glm::vec3>& positions, const std::vector<float>& sizes, float saturnX, float saturnZ) {
     glBindTexture(GL_TEXTURE_2D, asteroidTexture);
 
     for (size_t i = 0; i < positions.size(); ++i) {
@@ -571,6 +574,21 @@ void renderRingAsteroids(GLuint shader, GLuint modelLoc, GLuint sphereVao, const
 
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+// Function to rotate a point around the Y-axis
+glm::vec3 rotateAroundYAxis(const glm::vec3& point, float angle) {
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::vec4 rotatedPoint = rotationMatrix * glm::vec4(point, 1.0f);
+    return glm::vec3(rotatedPoint);
+}
+
+// Update asteroid positions to simulate orbiting
+void updateAsteroidPositions(std::vector<glm::vec3>& positions, const std::vector<float>& orbitSpeeds, float deltaTime) {
+    for (size_t i = 0; i < positions.size(); ++i) {
+        float angle = orbitSpeeds[i] * deltaTime; // Calculate rotation angle based on individual speed and time
+        positions[i] = rotateAroundYAxis(positions[i], angle);
+    }
 }
 
 int main(void)
@@ -706,7 +724,8 @@ int main(void)
 
     std::vector<glm::vec3> ringAsteroidPositions;
     std::vector<float> ringAsteroidSizes;
-    generateRingAsteroids(ringAsteroidPositions, ringAsteroidSizes);
+    std::vector<float> ringAsteroidOrbitSpeeds;
+    generateRingAsteroids(ringAsteroidPositions, ringAsteroidSizes, ringAsteroidOrbitSpeeds);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -819,7 +838,10 @@ int main(void)
         float saturnX = orbitalRadii[6] * cos(saturnAngle);
         float saturnZ = orbitalRadii[6] * sin(saturnAngle);
 
-        renderRingAsteroids(shader, modelLoc, sphereVao, sphereIndices, asteroidTexture, ringAsteroidPositions, ringAsteroidSizes, saturnX, saturnZ);
+        // Update positions
+        updateAsteroidPositions(ringAsteroidPositions, ringAsteroidOrbitSpeeds, deltaTime);
+
+        renderSaturnRingAsteroids(shader, modelLoc, sphereVao, sphereIndices, asteroidTexture, ringAsteroidPositions, ringAsteroidSizes, saturnX, saturnZ);
 
         // Update asteroid positions
         updateAsteroids(asteroidPositions, asteroidRotationSpeeds);
