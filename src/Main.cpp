@@ -34,7 +34,7 @@ const int TEXT_INSTRUCTION_POS_Y = 10;
 
 // Define the camera position window parameters
 const float CAMERA_PARAMETERS_MARGIN_TOP = 20.0f;
-const float CAMERA_PARAMETERS_MARGIN_RIGHT = 96.0f;
+const float CAMERA_PARAMETERS_MARGIN_RIGHT = 40.0f;
 
 // Define the initial camera position
 glm::vec3 initialCameraPos = glm::vec3(-27.55f, 11.88f, 5.53f);
