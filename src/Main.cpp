@@ -150,7 +150,7 @@ float deltaTime = 0.0f; // Time between frames
 float lastFrame = 0.0f; // Time of the last frame
 
 // Define constants for the asteroid belt
-const int NUM_ASTEROIDS = 10000;
+const int NUM_ASTEROIDS = 5000;
 const float ASTEROID_MIN_RADIUS = 0.001f;
 const float ASTEROID_MAX_RADIUS = 0.030f; 
 const float BELT_INNER_RADIUS = 10.0f; // Between Mars (8.0f) and Jupiter (14.0f)

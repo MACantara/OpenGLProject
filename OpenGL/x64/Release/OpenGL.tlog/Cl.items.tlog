@@ -1,0 +1,15 @@
+C:\OpenGL_Projects\Modern-OpenGL\Dependencies\ImGui\backends\imgui_impl_glfw.cpp;C:\OpenGL_Projects\Modern-OpenGL\OpenGL\x64\Release\imgui_impl_glfw.obj
+C:\OpenGL_Projects\Modern-OpenGL\Dependencies\ImGui\backends\imgui_impl_opengl3.cpp;C:\OpenGL_Projects\Modern-OpenGL\OpenGL\x64\Release\imgui_impl_opengl3.obj
+C:\OpenGL_Projects\Modern-OpenGL\Dependencies\ImGui\imgui.cpp;C:\OpenGL_Projects\Modern-OpenGL\OpenGL\x64\Release\imgui.obj
+C:\OpenGL_Projects\Modern-OpenGL\Dependencies\ImGui\imgui_demo.cpp;C:\OpenGL_Projects\Modern-OpenGL\OpenGL\x64\Release\imgui_demo.obj
+C:\OpenGL_Projects\Modern-OpenGL\Dependencies\ImGui\imgui_draw.cpp;C:\OpenGL_Projects\Modern-OpenGL\OpenGL\x64\Release\imgui_draw.obj
+C:\OpenGL_Projects\Modern-OpenGL\Dependencies\ImGui\imgui_tables.cpp;C:\OpenGL_Projects\Modern-OpenGL\OpenGL\x64\Release\imgui_tables.obj
+C:\OpenGL_Projects\Modern-OpenGL\Dependencies\ImGui\imgui_widgets.cpp;C:\OpenGL_Projects\Modern-OpenGL\OpenGL\x64\Release\imgui_widgets.obj
+C:\OpenGL_Projects\Modern-OpenGL\src\imgui.cpp;C:\OpenGL_Projects\Modern-OpenGL\OpenGL\x64\Release\imgui.obj
+C:\OpenGL_Projects\Modern-OpenGL\src\imgui_demo.cpp;C:\OpenGL_Projects\Modern-OpenGL\OpenGL\x64\Release\imgui_demo.obj
+C:\OpenGL_Projects\Modern-OpenGL\src\imgui_draw.cpp;C:\OpenGL_Projects\Modern-OpenGL\OpenGL\x64\Release\imgui_draw.obj
+C:\OpenGL_Projects\Modern-OpenGL\src\imgui_impl_glfw.cpp;C:\OpenGL_Projects\Modern-OpenGL\OpenGL\x64\Release\imgui_impl_glfw.obj
+C:\OpenGL_Projects\Modern-OpenGL\src\imgui_impl_opengl3.cpp;C:\OpenGL_Projects\Modern-OpenGL\OpenGL\x64\Release\imgui_impl_opengl3.obj
+C:\OpenGL_Projects\Modern-OpenGL\src\imgui_tables.cpp;C:\OpenGL_Projects\Modern-OpenGL\OpenGL\x64\Release\imgui_tables.obj
+C:\OpenGL_Projects\Modern-OpenGL\src\imgui_widgets.cpp;C:\OpenGL_Projects\Modern-OpenGL\OpenGL\x64\Release\imgui_widgets.obj
+C:\OpenGL_Projects\Modern-OpenGL\src\Main.cpp;C:\OpenGL_Projects\Modern-OpenGL\OpenGL\x64\Release\Main.obj

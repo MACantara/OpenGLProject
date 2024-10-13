@@ -1,0 +1,42 @@
+﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(1119,5): warning MSB8027: Two or more files with the name of imgui_impl_glfw.cpp will produce outputs to the same location. This can lead to an incorrect build result.  The files involved are Dependencies\ImGui\backends\imgui_impl_glfw.cpp, src\imgui_impl_glfw.cpp.
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(1119,5): warning MSB8027: Two or more files with the name of imgui_impl_opengl3.cpp will produce outputs to the same location. This can lead to an incorrect build result.  The files involved are Dependencies\ImGui\backends\imgui_impl_opengl3.cpp, src\imgui_impl_opengl3.cpp.
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(1119,5): warning MSB8027: Two or more files with the name of imgui.cpp will produce outputs to the same location. This can lead to an incorrect build result.  The files involved are Dependencies\ImGui\imgui.cpp, src\imgui.cpp.
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(1119,5): warning MSB8027: Two or more files with the name of imgui_demo.cpp will produce outputs to the same location. This can lead to an incorrect build result.  The files involved are Dependencies\ImGui\imgui_demo.cpp, src\imgui_demo.cpp.
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(1119,5): warning MSB8027: Two or more files with the name of imgui_draw.cpp will produce outputs to the same location. This can lead to an incorrect build result.  The files involved are Dependencies\ImGui\imgui_draw.cpp, src\imgui_draw.cpp.
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(1119,5): warning MSB8027: Two or more files with the name of imgui_tables.cpp will produce outputs to the same location. This can lead to an incorrect build result.  The files involved are Dependencies\ImGui\imgui_tables.cpp, src\imgui_tables.cpp.
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(1119,5): warning MSB8027: Two or more files with the name of imgui_widgets.cpp will produce outputs to the same location. This can lead to an incorrect build result.  The files involved are Dependencies\ImGui\imgui_widgets.cpp, src\imgui_widgets.cpp.
+  Main.cpp
+C:\OpenGL_Projects\Modern-OpenGL\src\Main.cpp(353,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\OpenGL_Projects\Modern-OpenGL\src\Main.cpp(354,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\OpenGL_Projects\Modern-OpenGL\src\Main.cpp(358,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\OpenGL_Projects\Modern-OpenGL\src\Main.cpp(359,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\OpenGL_Projects\Modern-OpenGL\src\Main.cpp(360,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\OpenGL_Projects\Modern-OpenGL\src\Main.cpp(361,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\OpenGL_Projects\Modern-OpenGL\src\Main.cpp(413,23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\OpenGL_Projects\Modern-OpenGL\src\Main.cpp(436,56): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\OpenGL_Projects\Modern-OpenGL\src\Main.cpp(462,52): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\OpenGL_Projects\Modern-OpenGL\src\Main.cpp(537,56): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\OpenGL_Projects\Modern-OpenGL\src\Main.cpp(572,56): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\OpenGL_Projects\Modern-OpenGL\src\Main.cpp(733,27): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\OpenGL_Projects\Modern-OpenGL\src\Main.cpp(863,67): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+OpenGL\x64\Release\imgui.obj : warning LNK4042: object specified more than once; extras ignored
+OpenGL\x64\Release\imgui_demo.obj : warning LNK4042: object specified more than once; extras ignored
+OpenGL\x64\Release\imgui_draw.obj : warning LNK4042: object specified more than once; extras ignored
+OpenGL\x64\Release\imgui_impl_glfw.obj : warning LNK4042: object specified more than once; extras ignored
+OpenGL\x64\Release\imgui_impl_opengl3.obj : warning LNK4042: object specified more than once; extras ignored
+OpenGL\x64\Release\imgui_tables.obj : warning LNK4042: object specified more than once; extras ignored
+OpenGL\x64\Release\imgui_widgets.obj : warning LNK4042: object specified more than once; extras ignored
+soil2-debug.lib(SOIL2.obj) : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/OPT:ICF' specification
+LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+LINK : warning LNK4098: defaultlib 'MSVCRTD' conflicts with use of other libs; use /NODEFAULTLIB:library
+  Generating code
+  1 of 2201 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    32 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+glew32s.lib(glew.obj) : warning LNK4099: PDB '' was not found with 'glew32s.lib(glew.obj)' or at ''; linking object as if no debug info
+soil2-debug.lib(SOIL2.obj) : warning LNK4099: PDB '' was not found with 'soil2-debug.lib(SOIL2.obj)' or at ''; linking object as if no debug info
+soil2-debug.lib(image_DXT.obj) : warning LNK4099: PDB '' was not found with 'soil2-debug.lib(image_DXT.obj)' or at ''; linking object as if no debug info
+soil2-debug.lib(wfETC.obj) : warning LNK4099: PDB '' was not found with 'soil2-debug.lib(wfETC.obj)' or at ''; linking object as if no debug info
+soil2-debug.lib(image_helper.obj) : warning LNK4099: PDB '' was not found with 'soil2-debug.lib(image_helper.obj)' or at ''; linking object as if no debug info
+  OpenGL.vcxproj -> C:\OpenGL_Projects\Modern-OpenGL\x64\Release\OpenGL.exe
