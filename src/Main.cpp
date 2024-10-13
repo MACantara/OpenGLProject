@@ -158,7 +158,7 @@ const float MIN_ROTATION_SPEED = 0.0001f;
 const float MAX_ROTATION_SPEED = 0.001f;
 
 // Moon parameters
-const float moonScale = 0.1f;
+const float moonScale = 0.15f;
 const float moonOrbitRadius = 0.75f; // Distance from Earth
 const float moonOrbitSpeed = 0.05f; // Speed of orbit around Earth
 
