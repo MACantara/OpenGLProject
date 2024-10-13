@@ -163,6 +163,11 @@ const float moonScale = 0.15f;
 const float moonOrbitRadius = 0.75f; // Distance from Earth
 const float moonOrbitSpeed = 0.05f; // Speed of orbit around Earth
 
+// Constants for Saturn's ring
+const int NUM_RING_ASTEROIDS = 5000; // Number of small asteroids in the ring
+const float RING_INNER_RADIUS = 0.75f; // Inner radius of the ring
+const float RING_OUTER_RADIUS = 1.5f; // Outer radius of the ring
+
 // Load texture function
 GLuint loadTexture(const char* filePath) {
     GLuint textureID;
@@ -532,6 +537,40 @@ void renderAsteroids(GLuint shader, GLuint modelLoc, GLuint sphereVao, const std
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+// Function to generate asteroid positions for Saturn's ring
+void generateRingAsteroids(std::vector<glm::vec3>& positions, std::vector<float>& sizes) {
+    srand(static_cast<unsigned int>(time(0))); // Seed for random number generation
+
+    for (int i = 0; i < NUM_RING_ASTEROIDS; ++i) {
+        float angle = randomFloat(0.0f, 2.0f * M_PI);
+        float distance = randomFloat(RING_INNER_RADIUS, RING_OUTER_RADIUS);
+        float x = distance * cos(angle);
+        float z = distance * sin(angle);
+        float y = randomFloat(-0.01f, 0.01f); // Small vertical variation for thickness
+
+        positions.push_back(glm::vec3(x, y, z));
+        sizes.push_back(randomFloat(ASTEROID_MIN_RADIUS, ASTEROID_MAX_RADIUS));
+    }
+}
+
+// Function to render Saturn's ring asteroids
+void renderRingAsteroids(GLuint shader, GLuint modelLoc, GLuint sphereVao, const std::vector<unsigned int>& sphereIndices, GLuint asteroidTexture, const std::vector<glm::vec3>& positions, const std::vector<float>& sizes, float saturnX, float saturnZ) {
+    glBindTexture(GL_TEXTURE_2D, asteroidTexture);
+
+    for (size_t i = 0; i < positions.size(); ++i) {
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(saturnX, 0.0f, saturnZ) + positions[i]);
+        model = glm::scale(model, glm::vec3(sizes[i]));
+
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+        glBindVertexArray(sphereVao);
+        glDrawElements(GL_TRIANGLES, sphereIndices.size(), GL_UNSIGNED_INT, 0);
+    }
+
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 int main(void)
 {
     GLFWwindow* window;
@@ -663,6 +702,10 @@ int main(void)
     std::vector<float> asteroidRotationSpeeds;
     generateAsteroids(asteroidPositions, asteroidSizes, asteroidRotationSpeeds);
 
+    std::vector<glm::vec3> ringAsteroidPositions;
+    std::vector<float> ringAsteroidSizes;
+    generateRingAsteroids(ringAsteroidPositions, ringAsteroidSizes);
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -773,6 +816,8 @@ int main(void)
         float saturnAngle = angularVelocities[6] * currentTime;
         float saturnX = orbitalRadii[6] * cos(saturnAngle);
         float saturnZ = orbitalRadii[6] * sin(saturnAngle);
+
+        renderRingAsteroids(shader, modelLoc, sphereVao, sphereIndices, asteroidTexture, ringAsteroidPositions, ringAsteroidSizes, saturnX, saturnZ);
 
         // Update asteroid positions
         updateAsteroids(asteroidPositions, asteroidRotationSpeeds);
