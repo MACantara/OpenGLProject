@@ -62,10 +62,10 @@ bool cameraMovementEnabled = true; // Camera movement toggle
 float mouseSensitivity = 0.1f;
 
 // Define an array to hold texture IDs
-std::array<unsigned int, 11> textureIds;
+std::array<unsigned int, 12> textureIds;
 
 // Define the paths and scale factors for the textures
-const std::array<std::string, 11> texturePaths = {
+const std::array<std::string, 12> texturePaths = {
     "textures/sun.jpg",
     "textures/mercury.jpg",
     "textures/venus.jpg",
@@ -76,7 +76,8 @@ const std::array<std::string, 11> texturePaths = {
     "textures/uranus.jpg",
     "textures/neptune.jpg",
     "textures/asteroid.jpg",
-    "textures/moon.jpg"
+    "textures/moon.jpg",
+    "textures/saturn_ring.png"
 };
 
 // Define the scales for each planet
@@ -531,42 +532,6 @@ void renderAsteroids(GLuint shader, GLuint modelLoc, GLuint sphereVao, const std
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-// Function to render Saturn's rings using a disk
-void renderSaturnRings(GLuint shader, GLuint modelLoc, GLuint ringTexture, float saturnX, float saturnZ) {
-    glBindTexture(GL_TEXTURE_2D, ringTexture);
-
-    // Create a model matrix for the rings
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(saturnX, 0.0f, saturnZ));
-    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)); // Rotate to lie flat
-    model = glm::rotate(model, glm::radians(26.7f), glm::vec3(0.0f, 0.0f, 1.0f)); // Tilt the rings by 26.7 degrees
-    model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f)); // Scale the rings
-
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-    // Draw a disk for the rings
-    const int numSegments = 100; // Number of segments to approximate the disk
-    const float innerRadius = 0.4f; // Inner radius of the rings
-    const float outerRadius = 0.75f; // Outer radius of the rings
-
-    glBegin(GL_TRIANGLE_STRIP);
-    for (int i = 0; i <= numSegments; ++i) {
-        float angle = 2.0f * M_PI * i / numSegments;
-        float x = cos(angle);
-        float z = sin(angle);
-
-        // Outer vertex
-        glTexCoord2f(0.5f + 0.5f * x, 0.5f + 0.5f * z);
-        glVertex3f(outerRadius * x, 0.0f, outerRadius * z);
-
-        // Inner vertex
-        glTexCoord2f(0.5f + 0.5f * x * innerRadius / outerRadius, 0.5f + 0.5f * z * innerRadius / outerRadius);
-        glVertex3f(innerRadius * x, 0.0f, innerRadius * z);
-    }
-    glEnd();
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-}
-
 int main(void)
 {
     GLFWwindow* window;
@@ -811,9 +776,13 @@ int main(void)
 
 		// Load the texture for Saturn's rings
         GLuint saturnRingTexture = loadTexture("textures/saturn_ring.png");
+        if (saturnRingTexture == 0) {
+            std::cerr << "Failed to load Saturn's ring texture." << std::endl;
+        }
 
-        // Render Saturn's rings
-        renderSaturnRings(shader, modelLoc, saturnRingTexture, saturnX, saturnZ);
+        glActiveTexture(GL_TEXTURE0); // Activate the texture unit
+        glBindTexture(GL_TEXTURE_2D, saturnRingTexture); // Bind the texture
+        glUniform1i(glGetUniformLocation(shader, "textureSampler"), 0); // Set the sampler to use texture unit 0
 
         // Update asteroid positions
         updateAsteroids(asteroidPositions, asteroidRotationSpeeds);
