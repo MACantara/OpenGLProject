@@ -467,6 +467,18 @@ void drawOrbit(float radius, int segments) {
     glEnd();
 };
 
+// Function to draw the moon's orbit around the Earth
+void drawMoonOrbit(float earthX, float earthZ, float radius, int segments) {
+    glBegin(GL_LINE_STRIP);
+    for (int i = 0; i <= segments; i++) {
+        float theta = 2.0f * M_PI * float(i) / float(segments);
+        float x = earthX + radius * cosf(theta);
+        float z = earthZ + radius * sinf(theta);
+        glVertex3f(x, 0.0f, z);
+    }
+    glEnd();
+}
+
 // Function to generate random float between min and max
 float randomFloat(float min, float max) {
     return min + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (max - min)));
@@ -653,6 +665,8 @@ int main(void)
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
+        float currentTime = glfwGetTime();
+
         // Close window on pressing ESC
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
@@ -740,6 +754,15 @@ int main(void)
             glColor3f(1.0f, 1.0f, 1.0f); // Set orbit color (white)
             drawOrbit(orbitalRadii[i], 100); // 100 segments for smoothness
         }
+
+        // Calculate Earth's position
+        float earthAngle = angularVelocities[3] * currentTime;
+        float earthX = orbitalRadii[3] * cos(earthAngle);
+        float earthZ = orbitalRadii[3] * sin(earthAngle);
+
+        // Draw the moon's orbit around the Earth
+        glColor3f(0.5f, 0.5f, 0.5f); // Set orbit color (gray)
+        drawMoonOrbit(earthX, earthZ, moonOrbitRadius, 100); // 100 segments for smoothness
 
         // For textured objects
         glUniform1i(glGetUniformLocation(shader, "isOrbitLine"), false);
