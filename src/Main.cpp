@@ -166,7 +166,9 @@ const float moonOrbitSpeed = 0.05f; // Speed of orbit around Earth
 // Constants for Saturn's ring
 const int NUM_RING_ASTEROIDS = 5000; // Number of small asteroids in the ring
 const float RING_INNER_RADIUS = 0.75f; // Inner radius of the ring
-const float RING_OUTER_RADIUS = 1.5f; // Outer radius of the ring
+const float RING_OUTER_RADIUS = 1.0f; // Outer radius of the ring
+const float RING_ASTEROID_MIN_RADIUS = 0.001f; // Minimum radius of the asteroids
+const float RING_ASTEROID_MAX_RADIUS = 0.010f; // Maximum radius of the asteroids
 
 // Load texture function
 GLuint loadTexture(const char* filePath) {
@@ -549,7 +551,7 @@ void generateRingAsteroids(std::vector<glm::vec3>& positions, std::vector<float>
         float y = randomFloat(-0.01f, 0.01f); // Small vertical variation for thickness
 
         positions.push_back(glm::vec3(x, y, z));
-        sizes.push_back(randomFloat(ASTEROID_MIN_RADIUS, ASTEROID_MAX_RADIUS));
+        sizes.push_back(randomFloat(RING_ASTEROID_MIN_RADIUS, RING_ASTEROID_MAX_RADIUS));
     }
 }
 
