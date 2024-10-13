@@ -874,10 +874,10 @@ int main(void)
         ImGui::Begin("Camera Positions", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
         ImGui::SetWindowPos(ImVec2(width - TEXT_INSTRUCTION_WIDTH - CAMERA_PARAMETERS_MARGIN_RIGHT, TEXT_INSTRUCTION_POS_Y + ImGui::GetWindowHeight() + CAMERA_PARAMETERS_MARGIN_TOP), ImGuiCond_Always);
 
-        ImGui::Text("Initial Camera Position: (%.2f, %.2f, %.2f)", cameraPos.x, cameraPos.y, cameraPos.z);
-        ImGui::Text("Initial Yaw: %.2f", cameraYaw);
-        ImGui::Text("Initial Pitch: %.2f", cameraPitch);
-        ImGui::Text("Initial Camera Front: (%.2f, %.2f, %.2f)", cameraFront.x, cameraFront.y, cameraFront.z);
+        ImGui::Text("Camera Position: (%.2f, %.2f, %.2f)", cameraPos.x, cameraPos.y, cameraPos.z);
+        ImGui::Text("Camera Yaw: %.2f", cameraYaw);
+        ImGui::Text("Camera Pitch: %.2f", cameraPitch);
+        ImGui::Text("Camera Front: (%.2f, %.2f, %.2f)", cameraFront.x, cameraFront.y, cameraFront.z);
 
         ImGui::End();
 
