@@ -19,7 +19,7 @@
 
 // Define the window dimensions
 const int WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
-const std::string WINDOW_TITLE = "Lighting of Cube and Sphere";
+const std::string WINDOW_TITLE = "3D Solar System";
 
 // Define the mathematical constants
 const float M_PI = 3.14159265358979323846f;

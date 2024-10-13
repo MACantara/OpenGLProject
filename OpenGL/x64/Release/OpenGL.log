@@ -30,7 +30,7 @@ soil2-debug.lib(SOIL2.obj) : warning LNK4075: ignoring '/EDITANDCONTINUE' due to
 LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
 LINK : warning LNK4098: defaultlib 'MSVCRTD' conflicts with use of other libs; use /NODEFAULTLIB:library
   Generating code
-  1 of 2201 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+  2 of 2201 functions (<0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     32 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
