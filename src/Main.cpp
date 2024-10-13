@@ -734,6 +734,14 @@ int main(void)
         ImGui::SliderFloat("Mouse Sensitivity", &mouseSensitivity, 0.1f, 5.0f, "Speed: %.1f");
         ImGui::End();
 
+        // Display camera parameters
+        ImGui::Begin("Camera Parameters", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+        ImGui::Text("Initial Camera Position: (%.2f, %.2f, %.2f)", cameraPos.x, cameraPos.y, cameraPos.z);
+        ImGui::Text("Initial Yaw: %.2f", cameraYaw);
+        ImGui::Text("Initial Pitch: %.2f", cameraPitch);
+        ImGui::Text("Initial Camera Front: (%.2f, %.2f, %.2f)", cameraFront.x, cameraFront.y, cameraFront.z);
+        ImGui::End();
+
         // Rendering ImGui
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
