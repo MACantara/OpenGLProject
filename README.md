@@ -9,13 +9,13 @@
 4. Set up the include and library directories:
 	- Right click on the project -> Properties -> C/C++ -> General -> Additional Include Directories
 		- Add the following include directories: 
-			- `$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLM;$(SolutionDir)Dependencies\;`
+			- `$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\GLM;$(SolutionDir)Dependencies\;$(SolutionDir)Dependencies\SOIL2\include`
 	- Right click on the project -> Properties -> Linker -> General -> Additional Library Directories
 		- Add the following library directories:
-   			- `$(SolutionDir)Dependencies\GLEW\lib\Release\x64;$(SolutionDir)Dependencies\GLFW\lib-vc2022;`
+   			- `$(SolutionDir)Dependencies\GLEW\lib\Release\x64;$(SolutionDir)Dependencies\GLFW\lib-vc2022;$(SolutionDir)Dependencies\SOIL2\lib`
 	- Right click on the project -> Properties -> Linker -> Input -> Additional Dependencies
 		- Add the following dependencies:
-			- `glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;glu32.lib;`
+			- `glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;glu32.lib;soil2-debug.lib`
   	- Right click on the project -> Properties -> VC++ Directories -> Include Directories
    		- Add the following include directories:
      			- `$(SolutionDir)Dependencies\ImGui\;$(SolutionDir)Dependencies\ImGui\backends;$(IncludePath)`
